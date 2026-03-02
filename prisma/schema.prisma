@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  @@map("admin_users")
+}
+
+model Category {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  projects  Project[]
+
+  @@map("categories")
+}
+
+model Technology {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  icon      String?
+  projects  Project[]
+
+  @@map("technologies")
+}
+
+model Project {
+  id               Int     @id @default(autoincrement())
+  title            String
+  slug             String  @unique
+  keyword          String
+  metaTitle        String
+  metaDescription  String
+  canonicalTag     String?
+  mainImage        String
+  projectUrl       String
+  location         String
+  blog             String? @db.LongText
+  client           String?
+  challenge        String? @db.LongText
+  processSteps     String? @db.LongText
+  features         String? @db.LongText
+  results          String? @db.LongText
+  categories       Category[]
+  technologies     Technology[]
+  images           ProjectImage[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model ProjectImage {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  createdAt DateTime @default(now())
+
+  @@map("project_images")
+}
