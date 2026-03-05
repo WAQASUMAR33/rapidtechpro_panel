@@ -12,6 +12,13 @@ interface Project {
   categories: Array<{ name: string }>;
 }
 
+interface Service {
+  id: number;
+  title: string;
+  description: string;
+}
+
+
 const useIntersectionObserver = (ref: React.RefObject<HTMLElement | null>) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -34,6 +41,8 @@ const useIntersectionObserver = (ref: React.RefObject<HTMLElement | null>) => {
 
 export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+
   const heroRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const workRef = useRef<HTMLDivElement>(null);
@@ -60,7 +69,23 @@ export default function HomePage() {
       }
     };
 
+    const fetchServices = async () => {
+      try {
+        const res = await fetch('/api/services?t=' + Date.now(), {
+          headers: {
+            'x-api-key': 'rapidtech_secret_key_2026'
+          }
+        });
+        const data = await res.json();
+        const servicesData = data.success ? data.data : (Array.isArray(data) ? data : data.data || []);
+        setServices(Array.isArray(servicesData) ? servicesData : []);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
+
     fetchProjects();
+    fetchServices();
   }, []);
 
   return (
@@ -220,11 +245,27 @@ export default function HomePage() {
               <p className="text-gray-400">Building digital excellence</p>
             </div>
             <div>
-              <h4 className="font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">Features</a></li>
-                <li><a href="#" className="hover:text-white transition">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition">Security</a></li>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-4 h-4 rounded-full bg-teal-400"></div>
+                <h4 className="text-xl font-bold">Services</h4>
+              </div>
+              <ul className="space-y-3 text-lg text-gray-400">
+                {services.length > 0 ? (
+                  services.map((service) => (
+                    <li key={service.id}>
+                      <a href="#" className="hover:text-white transition">{service.title}</a>
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li>Mobile App Solutions</li>
+                    <li>Ecommerce Solutions</li>
+                    <li>Website Solutions</li>
+                    <li>HR Solutions</li>
+                    <li>POS Solutions</li>
+                    <li>UI/UX Solutions</li>
+                  </>
+                )}
               </ul>
             </div>
             <div>

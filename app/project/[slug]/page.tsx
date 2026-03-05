@@ -107,7 +107,11 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
   const fetchProject = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/projects?slug=${slug}`);
+      const res = await fetch(`/api/projects?slug=${slug}`, {
+        headers: {
+          'x-api-key': 'rapidtech_secret_key_2026'
+        }
+      });
       const data = await res.json();
 
       if (data.success && data.data) {
@@ -172,7 +176,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
             <p className="text-xl text-gray-300 max-w-2xl">{project.metaDescription}</p>
           </div>
         </div>
-        
+
         {/* Hero Image */}
         {project.mainImage && (
           <div className="max-w-7xl mx-auto px-6 pb-20">

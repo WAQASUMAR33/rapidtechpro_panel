@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { uploadImageDirect } from '@/lib/uploadImage';
 
 interface Category {
   id: number;
@@ -92,21 +93,7 @@ export default function TechnologiesPage() {
     try {
       setAdding(true);
 
-      // Upload icon
-      const formData = new FormData();
-      formData.append('file', newTechnologyIcon);
-
-      const uploadRes = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const uploadData = await uploadRes.json();
-      if (!uploadData.success) {
-        setMessage('Error uploading icon');
-        setAdding(false);
-        return;
-      }
+      const iconUrl = await uploadImageDirect(newTechnologyIcon);
 
       const res = await fetch('/api/technologies', {
         method: 'POST',
@@ -116,12 +103,13 @@ export default function TechnologiesPage() {
         },
         body: JSON.stringify({
           name: newTechnologyName.trim(),
-          icon: uploadData.data.url,
+          icon: iconUrl,
         }),
       });
 
       if (res.ok) {
-        const newTechnology = await res.json();
+        const result = await res.json();
+        const newTechnology = result.success ? result.data : result;
         setTechnologies([...technologies, newTechnology]);
         setNewTechnologyName('');
         setNewTechnologyIcon(null);
@@ -261,8 +249,8 @@ export default function TechnologiesPage() {
           <button
             onClick={() => setSelectedTechnology(null)}
             className={`px-2 py-1 text-xs rounded-full font-medium transition ${selectedTechnology === null
-                ? 'bg-teal-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-teal-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
           >
             All
@@ -272,8 +260,8 @@ export default function TechnologiesPage() {
               key={tech.id}
               onClick={() => setSelectedTechnology(tech.id)}
               className={`px-2 py-1 text-xs rounded-full font-medium transition ${selectedTechnology === tech.id
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-teal-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
             >
               {tech.name}
@@ -300,8 +288,8 @@ export default function TechnologiesPage() {
                   key={technology.id}
                   onClick={() => setSelectedTechnology(selectedTechnology === technology.id ? null : technology.id)}
                   className={`bg-white rounded-lg p-6 shadow-sm hover:shadow-lg transition cursor-pointer border-2 ${selectedTechnology === technology.id
-                      ? 'border-teal-600'
-                      : 'border-gray-200'
+                    ? 'border-teal-600'
+                    : 'border-gray-200'
                     }`}
                 >
                   <div className="flex flex-col items-center text-center">

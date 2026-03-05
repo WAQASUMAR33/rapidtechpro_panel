@@ -94,7 +94,8 @@ export default function CategoriesPage() {
       });
 
       if (res.ok) {
-        const newCategory = await res.json();
+        const result = await res.json();
+        const newCategory = result.success ? result.data : result;
         setCategories([...categories, newCategory]);
         setNewCategoryName('');
         setShowAddForm(false);
@@ -201,8 +202,8 @@ export default function CategoriesPage() {
           <button
             onClick={() => setSelectedCategory(null)}
             className={`px-2 py-1 text-xs rounded-full font-medium transition ${selectedCategory === null
-                ? 'bg-teal-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-teal-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
           >
             All
@@ -212,8 +213,8 @@ export default function CategoriesPage() {
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-2 py-1 text-xs rounded-full font-medium transition ${selectedCategory === cat.id
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-teal-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
             >
               {cat.name}
@@ -241,8 +242,8 @@ export default function CategoriesPage() {
                   key={category.id}
                   onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
                   className={`bg-white rounded-lg p-6 shadow-sm hover:shadow-lg transition cursor-pointer border-2 ${selectedCategory === category.id
-                      ? 'border-teal-600'
-                      : 'border-gray-200'
+                    ? 'border-teal-600'
+                    : 'border-gray-200'
                     }`}
                 >
                   <div className="flex flex-col items-center text-center">

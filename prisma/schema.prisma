@@ -45,14 +45,20 @@ model Project {
   metaDescription  String
   canonicalTag     String?
   mainImage        String
+  bannerImage      String?
+  projectIcon      String? // Added field for project icon
   projectUrl       String
+  videoUrl         String?
   location         String
+  shortDescription String? @db.LongText
   blog             String? @db.LongText
   client           String?
+  strategy         String? @db.LongText
   challenge        String? @db.LongText
   processSteps     String? @db.LongText
   features         String? @db.LongText
   results          String? @db.LongText
+  successPoints    String? @db.LongText
   categories       Category[]
   technologies     Technology[]
   images           ProjectImage[]
@@ -71,3 +77,70 @@ model ProjectImage {
 
   @@map("project_images")
 }
+
+model Service {
+  id               Int      @id @default(autoincrement())
+  title            String
+  slug             String?   @unique
+  description      String   @db.LongText
+
+  icon             String?
+  heroSubtitle     String?
+  heroImage        String?
+  coreOfferings    Json?
+  platformExpertise Json?
+  processSteps     Json?
+  industries       Json?
+  maintenance      String?  @db.LongText
+  benefits         Json?
+  techStack        Json?
+  timeline         Json?
+  testimonials     Json?
+  caseStudies      Json?
+  faq              Json?
+  ctaTitle         String?
+  ctaText          String?
+  ctaButtonText    String?
+  pricing          Pricing[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Pricing {
+  id            Int      @id @default(autoincrement())
+  serviceId     Int
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  // Standard Tier
+  standardName        String?  @default("Standard")
+  standardPrice       Float?
+  standardPriceSuffix String?  @default("Per Month")
+  standardFeatures    Json?
+  standardCta         String?  @default("Book Free Consultancy")
+  standardIsPopular   Boolean  @default(false)
+
+  // Premium Tier
+  premiumName         String?  @default("Premium")
+  premiumPrice        Float?
+  premiumPriceSuffix  String?  @default("Per Month")
+  premiumFeatures     Json?
+  premiumCta          String?  @default("Book Free Consultancy")
+  premiumIsPopular    Boolean  @default(false)
+
+  // Custom Tier
+  customName          String?  @default("Custom")
+  customPrice         Float?
+  customPriceSuffix   String?  @default("Per Month")
+  customPriceLabel    String?  @default("Contact Us")
+  customFeatures      Json?
+  customCta           String?  @default("Book Free Consultancy")
+  customIsPopular     Boolean  @default(false)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("pricing")
+}
+

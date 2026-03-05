@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const projectId = parseInt(params.id);
+    const { id } = await params;
+    const projectId = parseInt(id);
 
     const project = await prisma.project.findUnique({
       where: { id: projectId },
@@ -21,16 +20,16 @@ export async function GET(
 
     if (!project) {
       return NextResponse.json(
-        { error: 'Project not found' },
+        { success: false, message: 'Project not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(project);
+    return NextResponse.json({ success: true, data: project });
   } catch (error) {
     console.error('Error fetching project:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch project' },
+      { success: false, message: 'Failed to fetch project' },
       { status: 500 }
     );
   }
@@ -38,10 +37,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const projectId = parseInt(params.id);
+    const { id } = await params;
+    const projectId = parseInt(id);
     const data = await request.json();
 
     const project = await prisma.project.update({
@@ -54,14 +54,20 @@ export async function PUT(
         metaDescription: data.metaDescription,
         canonicalTag: data.canonicalTag || null,
         mainImage: data.mainImage,
+        bannerImage: data.bannerImage || null,
+        projectIcon: data.projectIcon || null,
         projectUrl: data.projectUrl,
+        videoUrl: data.videoUrl || null,
         location: data.location,
+        shortDescription: data.shortDescription || null,
         blog: data.blog || null,
         client: data.client || null,
+        strategy: data.strategy || null,
         challenge: data.challenge || null,
         processSteps: data.processSteps || null,
         features: data.features || null,
         results: data.results || null,
+        successPoints: data.successPoints || null,
         categories: data.categoryIds
           ? {
             set: data.categoryIds.map((id: number) => ({ id })),
@@ -80,11 +86,11 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json(project);
+    return NextResponse.json({ success: true, data: project });
   } catch (error) {
     console.error('Error updating project:', error);
     return NextResponse.json(
-      { error: 'Failed to update project' },
+      { success: false, message: 'Failed to update project' },
       { status: 500 }
     );
   }
@@ -92,20 +98,21 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const projectId = parseInt(params.id);
+    const { id } = await params;
+    const projectId = parseInt(id);
 
     await prisma.project.delete({
       where: { id: projectId },
     });
 
-    return NextResponse.json({ message: 'Project deleted successfully' });
+    return NextResponse.json({ success: true, message: 'Project deleted successfully' });
   } catch (error) {
     console.error('Error deleting project:', error);
     return NextResponse.json(
-      { error: 'Failed to delete project' },
+      { success: false, message: 'Failed to delete project' },
       { status: 500 }
     );
   }

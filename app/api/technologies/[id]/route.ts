@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const technologyId = parseInt(params.id);
+    const { id } = await params;
+    const technologyId = parseInt(id);
 
     const technology = await prisma.technology.findUnique({
       where: { id: technologyId },
@@ -19,16 +18,16 @@ export async function GET(
 
     if (!technology) {
       return NextResponse.json(
-        { error: 'Technology not found' },
+        { success: false, message: 'Technology not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(technology);
+    return NextResponse.json({ success: true, data: technology });
   } catch (error) {
     console.error('Error fetching technology:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch technology' },
+      { success: false, message: 'Failed to fetch technology' },
       { status: 500 }
     );
   }
@@ -36,15 +35,16 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const technologyId = parseInt(params.id);
+    const { id } = await params;
+    const technologyId = parseInt(id);
     const data = await request.json();
 
     if (!data.name) {
       return NextResponse.json(
-        { error: 'Technology name is required' },
+        { success: false, message: 'Technology name is required' },
         { status: 400 }
       );
     }
@@ -60,11 +60,11 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json(technology);
+    return NextResponse.json({ success: true, data: technology });
   } catch (error) {
     console.error('Error updating technology:', error);
     return NextResponse.json(
-      { error: 'Failed to update technology' },
+      { success: false, message: 'Failed to update technology' },
       { status: 500 }
     );
   }
@@ -72,20 +72,21 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const technologyId = parseInt(params.id);
+    const { id } = await params;
+    const technologyId = parseInt(id);
 
     await prisma.technology.delete({
       where: { id: technologyId },
     });
 
-    return NextResponse.json({ message: 'Technology deleted successfully' });
+    return NextResponse.json({ success: true, message: 'Technology deleted successfully' });
   } catch (error) {
     console.error('Error deleting technology:', error);
     return NextResponse.json(
-      { error: 'Failed to delete technology' },
+      { success: false, message: 'Failed to delete technology' },
       { status: 500 }
     );
   }

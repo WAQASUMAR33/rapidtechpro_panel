@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import ContentPage from './content';
 import CategoriesPage from './categories';
 import TechnologiesPage from './technologies';
+import ServicesPage from './services';
+import PricingPage from './pricing';
+
 
 interface Project {
   id: number;
@@ -27,7 +30,8 @@ interface Technology {
   name: string;
 }
 
-type PageType = 'dashboard' | 'content' | 'categories' | 'technologies' | 'profile';
+type PageType = 'dashboard' | 'content' | 'categories' | 'technologies' | 'services' | 'pricing' | 'profile';
+
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -103,8 +107,11 @@ export default function AdminDashboard() {
     { label: 'Content', id: 'content' as PageType },
     { label: 'Categories', id: 'categories' as PageType },
     { label: 'Technologies', id: 'technologies' as PageType },
+    { label: 'Services', id: 'services' as PageType },
+    { label: 'Pricing', id: 'pricing' as PageType },
     { label: 'Profile', id: 'profile' as PageType },
   ];
+
 
   return (
     <div className="min-h-screen bg-blue-50 flex">
@@ -125,8 +132,8 @@ export default function AdminDashboard() {
               key={idx}
               onClick={() => setCurrentPage(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${currentPage === item.id
-                  ? 'bg-teal-600 font-semibold'
-                  : 'hover:bg-teal-600 text-teal-100'
+                ? 'bg-teal-600 font-semibold'
+                : 'hover:bg-teal-600 text-teal-100'
                 }`}
             >
               <span>{item.label}</span>
@@ -176,6 +183,10 @@ export default function AdminDashboard() {
             <CategoriesPage />
           ) : currentPage === 'technologies' ? (
             <TechnologiesPage />
+          ) : currentPage === 'services' ? (
+            <ServicesPage />
+          ) : currentPage === 'pricing' ? (
+            <PricingPage />
           ) : currentPage === 'dashboard' ? (
             <>
               {/* Categories Cards - Only those with projects */}

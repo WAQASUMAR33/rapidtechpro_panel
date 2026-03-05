@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { uploadImageDirect } from '@/lib/uploadImage';
 
 interface Category {
   id: number;
@@ -21,14 +22,20 @@ interface Project {
   metaDescription: string;
   canonicalTag?: string;
   mainImage: string;
+  bannerImage?: string;
+  projectIcon?: string;
   projectUrl: string;
+  videoUrl?: string;
   location: string;
+  shortDescription?: string;
   blog?: string;
   client?: string;
+  strategy?: string;
   challenge?: string;
   processSteps?: string;
   features?: string;
   results?: string;
+  successPoints?: string;
   categories: Category[];
   technologies: Technology[];
   images: Array<{ id: number; imageUrl: string }>;
@@ -68,14 +75,22 @@ export default function ContentPage() {
     canonicalTag: '',
     mainImage: '',
     mainImageFile: null as File | null,
+    bannerImage: '',
+    bannerImageFile: null as File | null,
+    projectIcon: '',
+    projectIconFile: null as File | null,
     projectUrl: '',
+    videoUrl: '',
     location: '',
+    shortDescription: '',
     blog: '',
     client: '',
+    strategy: '',
     challenge: '',
     processSteps: '',
     features: '',
     results: '',
+    successPoints: '',
     categoryIds: [] as number[],
     technologyIds: [] as number[],
     images: [] as Array<{ file: File | null; url: string }>,
@@ -220,20 +235,7 @@ export default function ContentPage() {
   };
 
   const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      return data.data.url;
-    } else {
-      throw new Error(data.message || 'Upload failed');
-    }
+    return await uploadImageDirect(file);
   };
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,6 +245,28 @@ export default function ContentPage() {
         ...prev,
         mainImageFile: file,
         mainImage: file.name,
+      }));
+    }
+  };
+
+  const handleBannerImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        bannerImageFile: file,
+        bannerImage: file.name,
+      }));
+    }
+  };
+
+  const handleProjectIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        projectIconFile: file,
+        projectIcon: file.name,
       }));
     }
   };
@@ -280,6 +304,8 @@ export default function ContentPage() {
 
     try {
       let mainImageUrl = formData.mainImage;
+      let bannerImageUrl = formData.bannerImage;
+      let projectIconUrl = formData.projectIcon;
 
       // Only upload main image if a new file is selected
       if (formData.mainImageFile) {
@@ -291,6 +317,16 @@ export default function ContentPage() {
         setMessage('❌ Please select a main image');
         setLoading(false);
         return;
+      }
+
+      // Upload banner image if a new file is selected
+      if (formData.bannerImageFile) {
+        bannerImageUrl = await uploadImage(formData.bannerImageFile);
+      }
+
+      // Upload project icon if a new file is selected
+      if (formData.projectIconFile) {
+        projectIconUrl = await uploadImage(formData.projectIconFile);
       }
 
       // Upload additional images
@@ -308,7 +344,7 @@ export default function ContentPage() {
       setMessage(editingProjectId ? '💾 Updating project...' : '💾 Creating project...');
 
       const method = editingProjectId ? 'PUT' : 'POST';
-      const url = editingProjectId ? `/api/projects?id=${editingProjectId}` : '/api/projects';
+      const url = editingProjectId ? `/api/projects/${editingProjectId}` : '/api/projects';
 
       const res = await fetch(url, {
         method: method,
@@ -324,14 +360,20 @@ export default function ContentPage() {
           metaDescription: formData.metaDescription,
           canonicalTag: formData.canonicalTag,
           mainImage: mainImageUrl,
+          bannerImage: bannerImageUrl,
+          projectIcon: projectIconUrl,
           projectUrl: formData.projectUrl,
+          videoUrl: formData.videoUrl,
           location: formData.location,
+          shortDescription: formData.shortDescription,
           blog: formData.blog,
           client: formData.client,
+          strategy: formData.strategy,
           challenge: formData.challenge,
           processSteps: formData.processSteps,
           features: formData.features,
           results: formData.results,
+          successPoints: formData.successPoints,
           categoryIds: formData.categoryIds,
           technologyIds: formData.technologyIds,
           images: uploadedImageUrls,
@@ -351,14 +393,22 @@ export default function ContentPage() {
           canonicalTag: '',
           mainImage: '',
           mainImageFile: null,
+          bannerImage: '',
+          bannerImageFile: null,
+          projectIcon: '',
+          projectIconFile: null,
           projectUrl: '',
+          videoUrl: '',
           location: '',
+          shortDescription: '',
           blog: '',
           client: '',
+          strategy: '',
           challenge: '',
           processSteps: '',
           features: '',
           results: '',
+          successPoints: '',
           categoryIds: [],
           technologyIds: [],
           images: [],
@@ -384,7 +434,7 @@ export default function ContentPage() {
     if (!confirm('Are you sure you want to delete this project?')) return;
 
     try {
-      const res = await fetch(`/api/projects?id=${id}`, {
+      const res = await fetch(`/api/projects/${id}`, {
         method: 'DELETE',
         headers: { 'x-api-key': 'rapidtech_secret_key_2026' }
       });
@@ -411,14 +461,22 @@ export default function ContentPage() {
       canonicalTag: project.canonicalTag || '',
       mainImage: project.mainImage,
       mainImageFile: null,
+      bannerImage: project.bannerImage || '',
+      bannerImageFile: null,
+      projectIcon: project.projectIcon || '',
+      projectIconFile: null,
       projectUrl: project.projectUrl,
+      videoUrl: project.videoUrl || '',
       location: project.location,
+      shortDescription: project.shortDescription || '',
       blog: project.blog || '',
       client: project.client || '',
+      strategy: project.strategy || '',
       challenge: project.challenge || '',
       processSteps: project.processSteps || '',
       features: project.features || '',
       results: project.results || '',
+      successPoints: project.successPoints || '',
       categoryIds: project.categories.map(c => c.id),
       technologyIds: project.technologies.map(t => t.id),
       images: project.images.map(img => ({ file: null, url: img.imageUrl })) || [],
@@ -688,6 +746,43 @@ export default function ContentPage() {
                     <p className="text-xs text-gray-500 mt-1">{formData.location.length}/100 characters</p>
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Project Video URL (YouTube/Vimeo)
+                  </label>
+                  <div>
+                    <input
+                      type="url"
+                      name="videoUrl"
+                      value={formData.videoUrl}
+                      onChange={handleInputChange}
+                      maxLength={2000}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
+                      placeholder="https://youtube.com/watch?v=..."
+                    />
+                    <p className="text-xs text-gray-500 mt-1">{formData.videoUrl.length}/2000 characters</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Short Description / Tagline *
+                </label>
+                <div>
+                  <textarea
+                    name="shortDescription"
+                    value={formData.shortDescription}
+                    onChange={handleInputChange}
+                    maxLength={500}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="Brief tagline or intro (2-3 sentences)..."
+                    rows={3}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">{formData.shortDescription.length}/500 characters</p>
+                </div>
               </div>
 
               <div className="mt-6">
@@ -795,6 +890,42 @@ export default function ContentPage() {
                     rows={5}
                   />
                   <p className="text-xs text-gray-500 mt-1">{formData.results.length}/2000 characters</p>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Our Strategy
+                </label>
+                <div>
+                  <textarea
+                    name="strategy"
+                    value={formData.strategy}
+                    onChange={handleInputChange}
+                    maxLength={2000}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="Describe the strategy used for this project..."
+                    rows={5}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">{formData.strategy.length}/2000 characters</p>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Key Success Points (Bullet Points)
+                </label>
+                <div>
+                  <textarea
+                    name="successPoints"
+                    value={formData.successPoints}
+                    onChange={handleInputChange}
+                    maxLength={2000}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="List the key outcomes in bullet points (separate with line breaks)..."
+                    rows={5}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">{formData.successPoints.length}/2000 characters</p>
                 </div>
               </div>
             </div>
@@ -1000,23 +1131,59 @@ export default function ContentPage() {
 
             {/* Images Section */}
             <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Project Images</h4>
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">Project Assets</h4>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Main Image *
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleMainImageChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
-                  />
-                  {formData.mainImage && (
-                    <p className="text-sm text-teal-600 mt-2">✓ {formData.mainImage}</p>
-                  )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Project Icon (Brand Logo)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProjectIconChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                    />
+                    {formData.projectIcon && (
+                      <p className="text-sm text-teal-600 mt-2">✓ {formData.projectIcon}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Hero Banner Image
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleBannerImageChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                    />
+                    {formData.bannerImage && (
+                      <p className="text-sm text-teal-600 mt-2">✓ {formData.bannerImage}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Main Display Image *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleMainImageChange}
+                      required={!editingProjectId}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                    />
+                    {formData.mainImage && (
+                      <p className="text-sm text-teal-600 mt-2">✓ {formData.mainImage}</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1078,14 +1245,22 @@ export default function ContentPage() {
                     canonicalTag: '',
                     mainImage: '',
                     mainImageFile: null,
+                    bannerImage: '',
+                    bannerImageFile: null,
+                    projectIcon: '',
+                    projectIconFile: null,
                     projectUrl: '',
+                    videoUrl: '',
                     location: '',
+                    shortDescription: '',
                     blog: '',
                     client: '',
+                    strategy: '',
                     challenge: '',
                     processSteps: '',
                     features: '',
                     results: '',
+                    successPoints: '',
                     categoryIds: [],
                     technologyIds: [],
                     images: [],
@@ -1126,7 +1301,14 @@ export default function ContentPage() {
               ) : (
                 projects.map((project) => (
                   <tr key={project.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-sm font-semibold text-gray-800">{project.title}</td>
+                    <td className="py-3 px-4 text-sm font-semibold text-gray-800">
+                      <div className="flex items-center gap-3">
+                        {project.projectIcon && (
+                          <img src={project.projectIcon} alt="" className="w-8 h-8 rounded object-contain bg-gray-50 p-1" />
+                        )}
+                        {project.title}
+                      </div>
+                    </td>
                     <td className="py-3 px-4 text-sm text-gray-600">
                       <div className="flex gap-1 flex-wrap">
                         {project.categories.map((cat) => (
@@ -1180,7 +1362,7 @@ export default function ContentPage() {
           </table>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
