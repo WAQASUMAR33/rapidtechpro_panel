@@ -144,3 +144,16 @@ model Pricing {
   @@map("pricing")
 }
 
+model TeamMember {
+  id           Int      @id @default(autoincrement())
+  name         String
+  designation  String
+  role         String
+  linkedinUrl  String?
+  portfolioUrl String?
+  image        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("team_members")
+}
