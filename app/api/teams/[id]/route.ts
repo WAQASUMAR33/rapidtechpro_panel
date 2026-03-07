@@ -3,12 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
     request: NextRequest,
-    context: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        // Await params as required by Next.js 15+ dynamic routes
-        const params = await context.params;
-        const { id } = params;
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json({ success: false, message: 'Team member ID missing' }, { status: 400 });
@@ -34,11 +32,10 @@ export async function GET(
 
 export async function PUT(
     request: NextRequest,
-    context: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const params = await context.params;
-        const { id } = params;
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json({ success: false, message: 'Team member ID missing' }, { status: 400 });
@@ -75,11 +72,10 @@ export async function PUT(
 
 export async function DELETE(
     request: NextRequest,
-    context: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const params = await context.params;
-        const { id } = params;
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json({ success: false, message: 'Team member ID missing' }, { status: 400 });
