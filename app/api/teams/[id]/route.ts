@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
     request: NextRequest,
-    context: { params: { id?: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         // Await params as required by Next.js 15+ dynamic routes
@@ -34,7 +34,7 @@ export async function GET(
 
 export async function PUT(
     request: NextRequest,
-    context: { params: { id?: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const params = await context.params;
@@ -75,7 +75,7 @@ export async function PUT(
 
 export async function DELETE(
     request: NextRequest,
-    context: { params: { id?: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const params = await context.params;
