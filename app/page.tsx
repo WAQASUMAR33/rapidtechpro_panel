@@ -1,6 +1,5 @@
-import AdminDashboard from './admin/dashboard';
+import AdminLogin from './admin/login';
 
 export default function Home() {
-  return <AdminDashboard />;
+  return <AdminLogin />;
 }
-

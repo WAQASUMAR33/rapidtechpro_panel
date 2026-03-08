@@ -7,6 +7,13 @@ export function proxy(request: NextRequest) {
     // Only apply to /api routes
     if (request.nextUrl.pathname.startsWith('/api')) {
         console.log('Processing API route security/CORS');
+
+        // Allow login route to pass through without API key check
+        if (request.nextUrl.pathname === '/api/admin/login') {
+            console.log('Login route detected, bypassing key check');
+            return NextResponse.next();
+        }
+
         const apiKey = request.headers.get('x-api-key');
         const validApiKey = process.env.API_KEY || 'rapidtech_secret_key_2026';
 

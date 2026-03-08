@@ -28,7 +28,8 @@ export default function AdminLogin() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'x-api-key': 'rapidtech_secret_key_2026'
         },
         body: JSON.stringify(loginData),
         credentials: 'include'
@@ -53,7 +54,7 @@ export default function AdminLogin() {
 
       // Redirect to dashboard
       setTimeout(() => {
-        router.push('/admin/dashboard');
+        router.push('/admin');
       }, 500);
     } catch (err) {
       console.error('Login error:', err);
@@ -68,13 +69,13 @@ export default function AdminLogin() {
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-600 to-teal-600-600 items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <svg className="absolute top-0 right-0 w-96 h-96" viewBox="0 0 200 200">
-            <circle cx="100" cy="50" r="80" fill="currentColor" className="text-teal-700"/>
+            <circle cx="100" cy="50" r="80" fill="currentColor" className="text-teal-700" />
           </svg>
         </div>
         <div className="relative text-white text-center z-10 px-8">
-          <img 
-            src="https://rapidtechpro.com/company/logo.png" 
-            alt="RapidTechPro Logo" 
+          <img
+            src="https://rapidtechpro.com/company/logo.png"
+            alt="RapidTechPro Logo"
             className="w-32 h-32 mx-auto mb-6 object-contain"
           />
           <h1 className="text-5xl font-bold mb-4">RapidTechPro</h1>
@@ -86,9 +87,9 @@ export default function AdminLogin() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-white">
         <div className="w-full max-w-md">
           <div className="mb-8 lg:hidden text-center">
-            <img 
-              src="https://rapidtechpro.com/company/logo.png" 
-              alt="RapidTechPro Logo" 
+            <img
+              src="https://rapidtechpro.com/company/logo.png"
+              alt="RapidTechPro Logo"
               className="w-24 h-24 mx-auto mb-4 object-contain"
             />
             <h2 className="text-3xl font-bold text-gray-900">Login</h2>
