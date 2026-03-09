@@ -202,7 +202,7 @@ export default function TestimonialsPage() {
                                 onChange={(e) => setReview(e.target.value)}
                                 rows={4}
                                 placeholder="Enter the client review..."
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none text-gray-900"
                                 required
                                 disabled={saving}
                             />
@@ -238,7 +238,7 @@ export default function TestimonialsPage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="e.g. Jackie Dallas"
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                                     required
                                     disabled={saving}
                                 />
@@ -250,7 +250,7 @@ export default function TestimonialsPage() {
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
                                     placeholder="e.g. Director at Acme Corp"
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                                     required
                                     disabled={saving}
                                 />

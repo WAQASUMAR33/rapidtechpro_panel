@@ -194,7 +194,7 @@ export default function TeamsPage() {
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
                                     placeholder="John Doe"
                                     required
                                 />
@@ -205,7 +205,7 @@ export default function TeamsPage() {
                                     type="text"
                                     value={designation}
                                     onChange={(e) => setDesignation(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
                                     placeholder="e.g. CEO, Senior Developer"
                                     required
                                 />
@@ -216,7 +216,7 @@ export default function TeamsPage() {
                                     type="text"
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
                                     placeholder="e.g. Leadership, Engineering"
                                     required
                                 />
@@ -227,7 +227,7 @@ export default function TeamsPage() {
                                     type="url"
                                     value={linkedinUrl}
                                     onChange={(e) => setLinkedinUrl(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
                                     placeholder="https://linkedin.com/in/..."
                                 />
                             </div>
@@ -237,7 +237,7 @@ export default function TeamsPage() {
                                     type="url"
                                     value={portfolioUrl}
                                     onChange={(e) => setPortfolioUrl(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-900"
                                     placeholder="https://..."
                                 />
                             </div>
