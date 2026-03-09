@@ -157,3 +157,16 @@ model TeamMember {
 
   @@map("team_members")
 }
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  image     String
+  review    String   @db.LongText
+  ratings   Int      @default(5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}

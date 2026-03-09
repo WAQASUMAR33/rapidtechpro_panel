@@ -8,6 +8,7 @@ import TechnologiesPage from './technologies';
 import ServicesPage from './services';
 import PricingPage from './pricing';
 import TeamsPage from './teams';
+import TestimonialsPage from './testimonials';
 
 
 interface Project {
@@ -31,7 +32,7 @@ interface Technology {
   name: string;
 }
 
-type PageType = 'dashboard' | 'content' | 'categories' | 'technologies' | 'services' | 'pricing' | 'teams' | 'profile';
+type PageType = 'dashboard' | 'content' | 'categories' | 'technologies' | 'services' | 'pricing' | 'teams' | 'testimonials' | 'profile';
 
 
 export default function AdminDashboard() {
@@ -111,6 +112,7 @@ export default function AdminDashboard() {
     { label: 'Services', id: 'services' as PageType },
     { label: 'Pricing', id: 'pricing' as PageType },
     { label: 'Teams', id: 'teams' as PageType },
+    { label: 'Testimonials', id: 'testimonials' as PageType },
     { label: 'Profile', id: 'profile' as PageType },
   ];
 
@@ -191,6 +193,8 @@ export default function AdminDashboard() {
             <PricingPage />
           ) : currentPage === 'teams' ? (
             <TeamsPage />
+          ) : currentPage === 'testimonials' ? (
+            <TestimonialsPage />
           ) : currentPage === 'dashboard' ? (
             <>
               {/* Categories Cards - Only those with projects */}
