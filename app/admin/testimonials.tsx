@@ -124,13 +124,13 @@ export default function TestimonialsPage() {
             let imageUrl = existingImage;
 
             if (imageFile) {
-                const uploadResult = await uploadImageDirect(imageFile);
-                if (!uploadResult.success) {
-                    setMessage(uploadResult.error || 'Image upload failed.');
+                try {
+                    imageUrl = await uploadImageDirect(imageFile);
+                } catch (uploadErr) {
+                    setMessage(uploadErr instanceof Error ? uploadErr.message : 'Image upload failed.');
                     setSaving(false);
                     return;
                 }
-                imageUrl = uploadResult.url!;
             }
 
             if (!imageUrl) {
