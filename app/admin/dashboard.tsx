@@ -45,10 +45,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const pageLabel = menuItems.find(m => m.id === currentPage)?.label || 'Dashboard';
+    document.title = `${pageLabel} | RapidTechPro`;
     fetchProjects();
     fetchCategories();
     fetchTechnologies();
-  }, []);
+  }, [currentPage]);
 
   const fetchProjects = async () => {
     try {
