@@ -61,6 +61,11 @@ model Project {
   successPoints    String? @db.LongText
   innovation       String? @db.LongText
   duration         String?
+  adaptableHeading String?
+  adaptableDescription String? @db.LongText
+  adaptableImage1  String?
+  adaptableImage2  String?
+  adaptableImage3  String?
   categories       Category[]
   technologies     Technology[]
   images           ProjectImage[]

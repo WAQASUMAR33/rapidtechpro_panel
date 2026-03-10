@@ -38,6 +38,11 @@ interface Project {
   successPoints?: string;
   innovation?: string;
   duration?: string;
+  adaptableHeading?: string;
+  adaptableDescription?: string;
+  adaptableImage1?: string;
+  adaptableImage2?: string;
+  adaptableImage3?: string;
   categories: Category[];
   technologies: Technology[];
   images: Array<{ id: number; imageUrl: string }>;
@@ -95,6 +100,14 @@ export default function ContentPage() {
     successPoints: '',
     innovation: '',
     duration: '',
+    adaptableHeading: '',
+    adaptableDescription: '',
+    adaptableImage1: '',
+    adaptableImage1File: null as File | null,
+    adaptableImage2: '',
+    adaptableImage2File: null as File | null,
+    adaptableImage3: '',
+    adaptableImage3File: null as File | null,
     categoryIds: [] as number[],
     technologyIds: [] as number[],
     images: [] as Array<{ file: File | null; url: string }>,
@@ -275,6 +288,39 @@ export default function ContentPage() {
     }
   };
 
+  const handleAdaptableImage1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        adaptableImage1File: file,
+        adaptableImage1: file.name,
+      }));
+    }
+  };
+
+  const handleAdaptableImage2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        adaptableImage2File: file,
+        adaptableImage2: file.name,
+      }));
+    }
+  };
+
+  const handleAdaptableImage3Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        adaptableImage3File: file,
+        adaptableImage3: file.name,
+      }));
+    }
+  };
+
   const handleAdditionalImageChange = (index: number, file: File | null) => {
     const newImages = [...formData.images];
     newImages[index] = {
@@ -333,6 +379,21 @@ export default function ContentPage() {
         projectIconUrl = await uploadImage(formData.projectIconFile);
       }
 
+      // Upload adaptable images
+      let adaptableImage1Url = formData.adaptableImage1;
+      let adaptableImage2Url = formData.adaptableImage2;
+      let adaptableImage3Url = formData.adaptableImage3;
+
+      if (formData.adaptableImage1File) {
+        adaptableImage1Url = await uploadImage(formData.adaptableImage1File);
+      }
+      if (formData.adaptableImage2File) {
+        adaptableImage2Url = await uploadImage(formData.adaptableImage2File);
+      }
+      if (formData.adaptableImage3File) {
+        adaptableImage3Url = await uploadImage(formData.adaptableImage3File);
+      }
+
       // Upload additional images
       const uploadedImageUrls: string[] = [];
       for (const img of formData.images) {
@@ -380,6 +441,11 @@ export default function ContentPage() {
           successPoints: formData.successPoints,
           innovation: formData.innovation,
           duration: formData.duration,
+          adaptableHeading: formData.adaptableHeading,
+          adaptableDescription: formData.adaptableDescription,
+          adaptableImage1: adaptableImage1Url,
+          adaptableImage2: adaptableImage2Url,
+          adaptableImage3: adaptableImage3Url,
           categoryIds: formData.categoryIds,
           technologyIds: formData.technologyIds,
           images: uploadedImageUrls,
@@ -417,6 +483,14 @@ export default function ContentPage() {
           successPoints: '',
           innovation: '',
           duration: '',
+          adaptableHeading: '',
+          adaptableDescription: '',
+          adaptableImage1: '',
+          adaptableImage1File: null,
+          adaptableImage2: '',
+          adaptableImage2File: null,
+          adaptableImage3: '',
+          adaptableImage3File: null,
           categoryIds: [],
           technologyIds: [],
           images: [],
@@ -487,6 +561,14 @@ export default function ContentPage() {
       successPoints: project.successPoints || '',
       innovation: project.innovation || '',
       duration: project.duration || '',
+      adaptableHeading: project.adaptableHeading || '',
+      adaptableDescription: project.adaptableDescription || '',
+      adaptableImage1: project.adaptableImage1 || '',
+      adaptableImage1File: null,
+      adaptableImage2: project.adaptableImage2 || '',
+      adaptableImage2File: null,
+      adaptableImage3: project.adaptableImage3 || '',
+      adaptableImage3File: null,
       categoryIds: project.categories.map(c => c.id),
       technologyIds: project.technologies.map(t => t.id),
       images: project.images.map(img => ({ file: null, url: img.imageUrl })) || [],
@@ -976,6 +1058,90 @@ export default function ContentPage() {
               </div>
             </div>
 
+            {/* Adaptable Design & Screenshots */}
+            <div className="border-t pt-6 space-y-6">
+              <h4 className="text-lg font-semibold text-gray-800">Adaptable Design & AR Features</h4>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Section Heading
+                  </label>
+                  <input
+                    type="text"
+                    name="adaptableHeading"
+                    value={formData.adaptableHeading}
+                    onChange={handleInputChange}
+                    maxLength={200}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
+                    placeholder="e.g., Adaptable design and AR features"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Section Description
+                </label>
+                <textarea
+                  name="adaptableDescription"
+                  value={formData.adaptableDescription}
+                  onChange={handleInputChange}
+                  maxLength={5000}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                  placeholder="Describe the adaptable design and optional AR features..."
+                  rows={4}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Screenshot 1
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAdaptableImage1Change}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                  />
+                  {formData.adaptableImage1 && (
+                    <p className="text-xs text-gray-500 mt-1 truncate">Current: {formData.adaptableImage1}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Screenshot 2
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAdaptableImage2Change}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                  />
+                  {formData.adaptableImage2 && (
+                    <p className="text-xs text-gray-500 mt-1 truncate">Current: {formData.adaptableImage2}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Screenshot 3
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAdaptableImage3Change}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                  />
+                  {formData.adaptableImage3 && (
+                    <p className="text-xs text-gray-500 mt-1 truncate">Current: {formData.adaptableImage3}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Categories & Technologies */}
             <div className="border-t pt-6">
               <h4 className="text-lg font-semibold text-gray-800 mb-4">Project Classification</h4>
@@ -1307,6 +1473,16 @@ export default function ContentPage() {
                     features: '',
                     results: '',
                     successPoints: '',
+                    innovation: '',
+                    duration: '',
+                    adaptableHeading: '',
+                    adaptableDescription: '',
+                    adaptableImage1: '',
+                    adaptableImage1File: null,
+                    adaptableImage2: '',
+                    adaptableImage2File: null,
+                    adaptableImage3: '',
+                    adaptableImage3File: null,
                     categoryIds: [],
                     technologyIds: [],
                     images: [],

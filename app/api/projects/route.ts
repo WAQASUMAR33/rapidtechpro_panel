@@ -78,6 +78,11 @@ export async function POST(request: NextRequest) {
         successPoints: data.successPoints || null,
         innovation: data.innovation || null,
         duration: data.duration || null,
+        adaptableHeading: data.adaptableHeading || null,
+        adaptableDescription: data.adaptableDescription || null,
+        adaptableImage1: data.adaptableImage1 || null,
+        adaptableImage2: data.adaptableImage2 || null,
+        adaptableImage3: data.adaptableImage3 || null,
         categories: data.categoryIds
           ? {
             connect: data.categoryIds.map((id: number) => ({ id })),
