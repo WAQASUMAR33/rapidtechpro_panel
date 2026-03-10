@@ -3,10 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { path: string[] } }
+    { params }: { params: Promise<{ path: string[] }> }
 ) {
     try {
-        const path = await params.path;
+        const { path } = await params;
         console.log('Proxy request for path:', path);
 
         // We expect the path to be something like ["api", "projects"]
@@ -23,7 +23,7 @@ export async function GET(
         switch (target) {
             case 'projects':
                 const projects = await prisma.project.findMany({
-                    include: { category: true, technologies: true },
+                    include: { categories: true, technologies: true },
                     orderBy: { createdAt: 'desc' },
                 });
                 return NextResponse.json({ success: true, data: projects });
