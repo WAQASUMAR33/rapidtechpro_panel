@@ -55,6 +55,9 @@ model Project {
   client           String?
   strategy         String? @db.LongText
   challenge        String? @db.LongText
+  challengeImage1  String?
+  challengeImage2  String?
+  challengeImage3  String?
   processSteps     String? @db.LongText
   features         String? @db.LongText
   results          String? @db.LongText

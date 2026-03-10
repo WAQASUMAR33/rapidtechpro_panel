@@ -32,6 +32,9 @@ interface Project {
   client?: string;
   strategy?: string;
   challenge?: string;
+  challengeImage1?: string;
+  challengeImage2?: string;
+  challengeImage3?: string;
   processSteps?: string;
   features?: string;
   results?: string;
@@ -94,6 +97,12 @@ export default function ContentPage() {
     client: '',
     strategy: '',
     challenge: '',
+    challengeImage1: '',
+    challengeImage1File: null as File | null,
+    challengeImage2: '',
+    challengeImage2File: null as File | null,
+    challengeImage3: '',
+    challengeImage3File: null as File | null,
     processSteps: '',
     features: '',
     results: '',
@@ -288,6 +297,21 @@ export default function ContentPage() {
     }
   };
 
+  const handleChallengeImage1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setFormData((prev) => ({ ...prev, challengeImage1File: file, challengeImage1: file.name }));
+  };
+
+  const handleChallengeImage2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setFormData((prev) => ({ ...prev, challengeImage2File: file, challengeImage2: file.name }));
+  };
+
+  const handleChallengeImage3Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setFormData((prev) => ({ ...prev, challengeImage3File: file, challengeImage3: file.name }));
+  };
+
   const handleAdaptableImage1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -379,6 +403,15 @@ export default function ContentPage() {
         projectIconUrl = await uploadImage(formData.projectIconFile);
       }
 
+      // Upload challenge images
+      let challengeImage1Url = formData.challengeImage1;
+      let challengeImage2Url = formData.challengeImage2;
+      let challengeImage3Url = formData.challengeImage3;
+
+      if (formData.challengeImage1File) challengeImage1Url = await uploadImage(formData.challengeImage1File);
+      if (formData.challengeImage2File) challengeImage2Url = await uploadImage(formData.challengeImage2File);
+      if (formData.challengeImage3File) challengeImage3Url = await uploadImage(formData.challengeImage3File);
+
       // Upload adaptable images
       let adaptableImage1Url = formData.adaptableImage1;
       let adaptableImage2Url = formData.adaptableImage2;
@@ -435,6 +468,9 @@ export default function ContentPage() {
           client: formData.client,
           strategy: formData.strategy,
           challenge: formData.challenge,
+          challengeImage1: challengeImage1Url,
+          challengeImage2: challengeImage2Url,
+          challengeImage3: challengeImage3Url,
           processSteps: formData.processSteps,
           features: formData.features,
           results: formData.results,
@@ -477,6 +513,12 @@ export default function ContentPage() {
           client: '',
           strategy: '',
           challenge: '',
+          challengeImage1: '',
+          challengeImage1File: null,
+          challengeImage2: '',
+          challengeImage2File: null,
+          challengeImage3: '',
+          challengeImage3File: null,
           processSteps: '',
           features: '',
           results: '',
@@ -555,6 +597,12 @@ export default function ContentPage() {
       client: project.client || '',
       strategy: project.strategy || '',
       challenge: project.challenge || '',
+      challengeImage1: project.challengeImage1 || '',
+      challengeImage1File: null,
+      challengeImage2: project.challengeImage2 || '',
+      challengeImage2File: null,
+      challengeImage3: project.challengeImage3 || '',
+      challengeImage3File: null,
       processSteps: project.processSteps || '',
       features: project.features || '',
       results: project.results || '',
@@ -946,6 +994,46 @@ export default function ContentPage() {
                     placeholder="Describe the challenge or problem the project addressed..."
                     rows={4}
                   />
+                  {/* Challenge Images */}
+                  <p className="text-sm font-semibold text-gray-600 mt-4 mb-2">Challenge Images (Optional)</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Challenge Image 1</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChallengeImage1Change}
+                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                      />
+                      {formData.challengeImage1 && (
+                        <p className="text-xs text-gray-500 mt-1 truncate">Current: {formData.challengeImage1}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Challenge Image 2</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChallengeImage2Change}
+                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                      />
+                      {formData.challengeImage2 && (
+                        <p className="text-xs text-gray-500 mt-1 truncate">Current: {formData.challengeImage2}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Challenge Image 3</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChallengeImage3Change}
+                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                      />
+                      {formData.challengeImage3 && (
+                        <p className="text-xs text-gray-500 mt-1 truncate">Current: {formData.challengeImage3}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div>
