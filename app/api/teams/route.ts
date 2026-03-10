@@ -7,11 +7,16 @@ export async function GET() {
             orderBy: { createdAt: 'desc' },
         });
         return NextResponse.json({ success: true, data: teams });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching team members:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Failed to fetch team members' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to fetch team members',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }
@@ -44,11 +49,16 @@ export async function POST(request: NextRequest) {
             { success: true, message: 'Team member added successfully', data: teamMember },
             { status: 201 }
         );
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating team member:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Failed to add team member' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to add team member',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }

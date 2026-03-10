@@ -13,11 +13,15 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(categories);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching categories:', error);
+    const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
     return NextResponse.json(
-      { error: 'Failed to fetch categories' },
-      { status: 500 }
+      {
+        error: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to fetch categories',
+        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: isDbError ? 503 : 500 }
     );
   }
 }
@@ -43,11 +47,15 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(category, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating category:', error);
+    const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
     return NextResponse.json(
-      { error: 'Failed to create category' },
-      { status: 500 }
+      {
+        error: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to create category',
+        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: isDbError ? 503 : 500 }
     );
   }
 }

@@ -10,11 +10,16 @@ export async function GET(request: NextRequest) {
         });
 
         return NextResponse.json({ success: true, data: services });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching services:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Failed to fetch services' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to fetch services',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }
@@ -63,11 +68,16 @@ export async function POST(request: NextRequest) {
 
 
         return NextResponse.json({ success: true, data: service }, { status: 201 });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating service:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Failed to create service' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to create service',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }

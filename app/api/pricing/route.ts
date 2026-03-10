@@ -16,9 +16,17 @@ export async function GET(request: NextRequest) {
         });
 
         return NextResponse.json({ success: true, data: pricing });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching pricing:', error);
-        return NextResponse.json({ success: false, message: 'Failed to fetch pricing' }, { status: 500 });
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
+        return NextResponse.json(
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to fetch pricing',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
+        );
     }
 }
 
@@ -61,8 +69,16 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json({ success: true, data: pricing }, { status: 201 });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating pricing:', error);
-        return NextResponse.json({ success: false, message: 'Failed to create pricing' }, { status: 500 });
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
+        return NextResponse.json(
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to create pricing',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
+        );
     }
 }

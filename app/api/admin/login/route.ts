@@ -44,11 +44,16 @@ export async function POST(request: NextRequest) {
         });
 
         return response;
-    } catch (error) {
+    } catch (error: any) {
         console.error('Login API error:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Internal server error' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Internal server error',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }

@@ -7,11 +7,16 @@ export async function GET() {
             orderBy: { createdAt: 'desc' },
         });
         return NextResponse.json({ success: true, data: testimonials });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching testimonials:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Failed to fetch testimonials' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to fetch testimonials',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }
@@ -39,11 +44,16 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json({ success: true, data: testimonial });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating testimonial:', error);
+        const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
         return NextResponse.json(
-            { success: false, message: 'Failed to create testimonial' },
-            { status: 500 }
+            {
+                success: false,
+                message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to create testimonial',
+                debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: isDbError ? 503 : 500 }
         );
     }
 }

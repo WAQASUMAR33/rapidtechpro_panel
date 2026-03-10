@@ -676,49 +676,58 @@ export default function ContentPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Project Title *
-                </label>
+            <div className="bg-gray-50/50 p-6 rounded-xl space-y-6 border border-gray-100">
+              <h4 className="text-xl font-bold text-teal-700 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">1</span>
+                Basic Information
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    maxLength={100}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
-                    placeholder="e.g., E-Commerce Platform"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">{formData.title.length}/100 characters</p>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Project Title *
+                  </label>
+                  <div>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      maxLength={100}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
+                      placeholder="e.g., E-Commerce Platform"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">{formData.title.length}/100 characters</p>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Slug *
-                </label>
                 <div>
-                  <input
-                    type="text"
-                    name="slug"
-                    value={formData.slug}
-                    onChange={handleInputChange}
-                    maxLength={100}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
-                    placeholder="Auto-generated from title"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">{formData.slug.length}/100 characters</p>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Slug *
+                  </label>
+                  <div>
+                    <input
+                      type="text"
+                      name="slug"
+                      value={formData.slug}
+                      onChange={handleInputChange}
+                      maxLength={100}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
+                      placeholder="Auto-generated from title"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">{formData.slug.length}/100 characters</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* SEO Fields */}
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">SEO Optimization</h4>
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100">
+              <h4 className="text-xl font-bold text-teal-700 mb-6 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">2</span>
+                SEO Optimization
+              </h4>
 
               <div className="space-y-4">
                 <div>
@@ -767,7 +776,7 @@ export default function ContentPage() {
                       value={formData.metaDescription}
                       onChange={handleInputChange}
                       maxLength={160}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
                       placeholder="Page description for search engines (155-160 characters)"
                       rows={2}
                     />
@@ -798,15 +807,20 @@ export default function ContentPage() {
             </div>
 
             {/* Project Details */}
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Project Details</h4>
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 space-y-8">
+              <h4 className="text-xl font-bold text-teal-700 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">3</span>
+                Project Details
+              </h4>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Project URL *
-                  </label>
+              {/* Core Details Sub-section */}
+              <div className="space-y-6">
+                <h5 className="text-md font-bold text-gray-800 border-b pb-2">Core Details</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Project URL *
+                    </label>
                     <input
                       type="url"
                       name="projectUrl"
@@ -817,15 +831,12 @@ export default function ContentPage() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
                       placeholder="https://example.com"
                     />
-                    <p className="text-xs text-gray-500 mt-1">{formData.projectUrl.length}/2000 characters</p>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Location
-                  </label>
                   <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Location
+                    </label>
                     <input
                       type="text"
                       name="location"
@@ -835,15 +846,12 @@ export default function ContentPage() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
                       placeholder="e.g., New York, USA"
                     />
-                    <p className="text-xs text-gray-500 mt-1">{formData.location.length}/100 characters</p>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Duration
-                  </label>
                   <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Duration
+                    </label>
                     <input
                       type="text"
                       name="duration"
@@ -853,15 +861,12 @@ export default function ContentPage() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
                       placeholder="e.g., 6 Months, Yearly"
                     />
-                    <p className="text-xs text-gray-500 mt-1">{formData.duration.length}/100 characters</p>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Project Video URL (YouTube/Vimeo)
-                  </label>
                   <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Project Video URL (YouTube/Vimeo)
+                    </label>
                     <input
                       type="url"
                       name="videoUrl"
@@ -871,16 +876,13 @@ export default function ContentPage() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
                       placeholder="https://youtube.com/watch?v=..."
                     />
-                    <p className="text-xs text-gray-500 mt-1">{formData.videoUrl.length}/2000 characters</p>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Short Description / Tagline *
-                </label>
-                <div>
+                <div className="mt-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Short Description / Tagline *
+                  </label>
                   <textarea
                     name="shortDescription"
                     value={formData.shortDescription}
@@ -889,17 +891,18 @@ export default function ContentPage() {
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
                     placeholder="Brief tagline or intro (2-3 sentences)..."
-                    rows={3}
+                    rows={2}
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.shortDescription.length}/500 characters</p>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Project Blog / Description
-                </label>
+              {/* Project Content Sub-section */}
+              <div className="space-y-6">
+                <h5 className="text-md font-bold text-gray-800 border-b pb-2">Project Content</h5>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Project Blog / Description
+                  </label>
                   <textarea
                     name="blog"
                     value={formData.blog}
@@ -907,17 +910,14 @@ export default function ContentPage() {
                     maxLength={5000}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
                     placeholder="Write the project blog/description here..."
-                    rows={8}
+                    rows={6}
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.blog.length}/5000 characters</p>
                 </div>
-              </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Client Name
-                </label>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Client Name
+                  </label>
                   <input
                     type="text"
                     name="client"
@@ -927,15 +927,16 @@ export default function ContentPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
                     placeholder="e.g., Acme Corporation"
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.client.length}/100 characters</p>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Challenge / Problem Statement
-                </label>
+              {/* Project Journey Sub-section */}
+              <div className="space-y-6">
+                <h5 className="text-md font-bold text-gray-800 border-b pb-2">Project Journey</h5>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Challenge / Problem Statement
+                  </label>
                   <textarea
                     name="challenge"
                     value={formData.challenge}
@@ -943,17 +944,14 @@ export default function ContentPage() {
                     maxLength={2000}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
                     placeholder="Describe the challenge or problem the project addressed..."
-                    rows={5}
+                    rows={4}
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.challenge.length}/2000 characters</p>
                 </div>
-              </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Process / Journey Steps
-                </label>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Process / Journey Steps
+                  </label>
                   <textarea
                     name="processSteps"
                     value={formData.processSteps}
@@ -961,71 +959,14 @@ export default function ContentPage() {
                     maxLength={2000}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
                     placeholder="Describe the process/journey in steps (e.g., Research | Discovery | Design | Development | Testing)"
-                    rows={5}
+                    rows={4}
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.processSteps.length}/2000 characters</p>
                 </div>
-              </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Key Features / Capabilities
-                </label>
                 <div>
-                  <textarea
-                    name="features"
-                    value={formData.features}
-                    onChange={handleInputChange}
-                    maxLength={2000}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
-                    placeholder="List key features and capabilities (separate with line breaks)..."
-                    rows={5}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">{formData.features.length}/2000 characters</p>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Results / Outcomes
-                </label>
-                <div>
-                  <textarea
-                    name="results"
-                    value={formData.results}
-                    onChange={handleInputChange}
-                    maxLength={2000}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
-                    placeholder="Describe the results and outcomes of the project..."
-                    rows={5}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">{formData.results.length}/2000 characters</p>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Innovation
-                </label>
-                <div>
-                  <textarea
-                    name="innovation"
-                    value={formData.innovation}
-                    onChange={handleInputChange}
-                    maxLength={2000}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
-                    placeholder="Describe the innovative aspects of the project..."
-                    rows={5}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">{formData.innovation.length}/2000 characters</p>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Our Strategy
-                </label>
-                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Our Strategy
+                  </label>
                   <textarea
                     name="strategy"
                     value={formData.strategy}
@@ -1033,34 +974,82 @@ export default function ContentPage() {
                     maxLength={2000}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
                     placeholder="Describe the strategy used for this project..."
-                    rows={5}
+                    rows={4}
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.strategy.length}/2000 characters</p>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Key Success Points (Bullet Points)
-                </label>
+              {/* Outcomes & Highlights Sub-section */}
+              <div className="space-y-6">
+                <h5 className="text-md font-bold text-gray-800 border-b pb-2">Outcomes & Highlights</h5>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Key Features / Capabilities
+                  </label>
+                  <textarea
+                    name="features"
+                    value={formData.features}
+                    onChange={handleInputChange}
+                    maxLength={2000}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="List key features and capabilities..."
+                    rows={4}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Results / Outcomes
+                  </label>
+                  <textarea
+                    name="results"
+                    value={formData.results}
+                    onChange={handleInputChange}
+                    maxLength={2000}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="Describe the results and outcomes..."
+                    rows={4}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Innovation
+                  </label>
+                  <textarea
+                    name="innovation"
+                    value={formData.innovation}
+                    onChange={handleInputChange}
+                    maxLength={2000}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="Describe the innovative aspects..."
+                    rows={4}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Key Success Points (Bullet Points)
+                  </label>
                   <textarea
                     name="successPoints"
                     value={formData.successPoints}
                     onChange={handleInputChange}
                     maxLength={2000}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
-                    placeholder="List the key outcomes in bullet points (separate with line breaks)..."
-                    rows={5}
+                    placeholder="List the key success points..."
+                    rows={4}
                   />
-                  <p className="text-xs text-gray-500 mt-1">{formData.successPoints.length}/2000 characters</p>
                 </div>
               </div>
             </div>
 
             {/* Adaptable Design & Screenshots */}
-            <div className="border-t pt-6 space-y-6">
-              <h4 className="text-lg font-semibold text-gray-800">Adaptable Design & AR Features</h4>
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 space-y-6">
+              <h4 className="text-xl font-bold text-teal-700 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">4</span>
+                Adaptable Design & AR Features
+              </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -1143,8 +1132,11 @@ export default function ContentPage() {
             </div>
 
             {/* Categories & Technologies */}
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Project Classification</h4>
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 space-y-6">
+              <h4 className="text-xl font-bold text-teal-700 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">5</span>
+                Project Classification
+              </h4>
 
               {/* Categories Dropdown */}
               <div className="mb-6" ref={categoryDropdownRef}>
@@ -1342,8 +1334,11 @@ export default function ContentPage() {
             </div>
 
             {/* Images Section */}
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Project Assets</h4>
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 space-y-6">
+              <h4 className="text-xl font-bold text-teal-700 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">6</span>
+                Project Assets & Hero Images
+              </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -1401,8 +1396,11 @@ export default function ContentPage() {
             </div>
 
             {/* Additional Images */}
-            <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Additional Images</h4>
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 space-y-6">
+              <h4 className="text-xl font-bold text-teal-700 flex items-center gap-2">
+                <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">7</span>
+                Additional Project Images
+              </h4>
               <div className="space-y-3">
                 {formData.images.map((img, idx) => (
                   <div key={idx} className="flex gap-2">
@@ -1584,7 +1582,7 @@ export default function ContentPage() {
           </table>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 

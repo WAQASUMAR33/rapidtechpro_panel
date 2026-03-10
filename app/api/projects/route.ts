@@ -40,11 +40,16 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true, data: projects });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching projects:', error);
+    const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch projects' },
-      { status: 500 }
+      {
+        success: false,
+        message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to fetch projects',
+        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: isDbError ? 503 : 500 }
     );
   }
 }
@@ -102,11 +107,16 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true, data: project }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating project:', error);
+    const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
     return NextResponse.json(
-      { success: false, message: 'Failed to create project' },
-      { status: 500 }
+      {
+        success: false,
+        message: isDbError ? 'Database connection failed. Please try again later.' : 'Failed to create project',
+        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: isDbError ? 503 : 500 }
     );
   }
 }
