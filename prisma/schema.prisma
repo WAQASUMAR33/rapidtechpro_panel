@@ -59,6 +59,8 @@ model Project {
   features         String? @db.LongText
   results          String? @db.LongText
   successPoints    String? @db.LongText
+  innovation       String? @db.LongText
+  duration         String?
   categories       Category[]
   technologies     Technology[]
   images           ProjectImage[]

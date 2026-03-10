@@ -36,6 +36,8 @@ interface Project {
   features?: string;
   results?: string;
   successPoints?: string;
+  innovation?: string;
+  duration?: string;
   categories: Category[];
   technologies: Technology[];
   images: Array<{ id: number; imageUrl: string }>;
@@ -91,6 +93,8 @@ export default function ContentPage() {
     features: '',
     results: '',
     successPoints: '',
+    innovation: '',
+    duration: '',
     categoryIds: [] as number[],
     technologyIds: [] as number[],
     images: [] as Array<{ file: File | null; url: string }>,
@@ -374,6 +378,8 @@ export default function ContentPage() {
           features: formData.features,
           results: formData.results,
           successPoints: formData.successPoints,
+          innovation: formData.innovation,
+          duration: formData.duration,
           categoryIds: formData.categoryIds,
           technologyIds: formData.technologyIds,
           images: uploadedImageUrls,
@@ -409,6 +415,8 @@ export default function ContentPage() {
           features: '',
           results: '',
           successPoints: '',
+          innovation: '',
+          duration: '',
           categoryIds: [],
           technologyIds: [],
           images: [],
@@ -477,6 +485,8 @@ export default function ContentPage() {
       features: project.features || '',
       results: project.results || '',
       successPoints: project.successPoints || '',
+      innovation: project.innovation || '',
+      duration: project.duration || '',
       categoryIds: project.categories.map(c => c.id),
       technologyIds: project.technologies.map(t => t.id),
       images: project.images.map(img => ({ file: null, url: img.imageUrl })) || [],
@@ -749,6 +759,24 @@ export default function ContentPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Duration
+                  </label>
+                  <div>
+                    <input
+                      type="text"
+                      name="duration"
+                      value={formData.duration}
+                      onChange={handleInputChange}
+                      maxLength={100}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black"
+                      placeholder="e.g., 6 Months, Yearly"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">{formData.duration.length}/100 characters</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Project Video URL (YouTube/Vimeo)
                   </label>
                   <div>
@@ -890,6 +918,24 @@ export default function ContentPage() {
                     rows={5}
                   />
                   <p className="text-xs text-gray-500 mt-1">{formData.results.length}/2000 characters</p>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Innovation
+                </label>
+                <div>
+                  <textarea
+                    name="innovation"
+                    value={formData.innovation}
+                    onChange={handleInputChange}
+                    maxLength={2000}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none text-black placeholder-gray-500"
+                    placeholder="Describe the innovative aspects of the project..."
+                    rows={5}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">{formData.innovation.length}/2000 characters</p>
                 </div>
               </div>
 

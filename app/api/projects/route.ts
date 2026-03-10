@@ -76,6 +76,8 @@ export async function POST(request: NextRequest) {
         features: data.features || null,
         results: data.results || null,
         successPoints: data.successPoints || null,
+        innovation: data.innovation || null,
+        duration: data.duration || null,
         categories: data.categoryIds
           ? {
             connect: data.categoryIds.map((id: number) => ({ id })),

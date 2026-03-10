@@ -68,6 +68,8 @@ export async function PUT(
         features: data.features || null,
         results: data.results || null,
         successPoints: data.successPoints || null,
+        innovation: data.innovation || null,
+        duration: data.duration || null,
         categories: data.categoryIds
           ? {
             set: data.categoryIds.map((id: number) => ({ id })),
