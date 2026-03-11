@@ -27,43 +27,29 @@ function fileToBase64(file: File): Promise<string> {
     });
 }
 
-/**
- * Upload an image directly from the browser to the PHP endpoint using base64.
- * Returns the full public URL of the uploaded image.
- */
 export async function uploadImageDirect(file: File): Promise<string> {
-    // Convert file to base64 Data URL (e.g. "data:image/png;base64,...")
-    const base64DataUrl = await fileToBase64(file);
+    const formData = new FormData();
+    formData.append('file', file);
 
-    // Send as JSON with "image" field – PHP script decodes the base64
-    const response = await fetch(PHP_UPLOAD_URL, {
+    const response = await fetch('/api/upload', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image: base64DataUrl }),
+        body: formData,
     });
 
-    const text = await response.text();
-    let data: { image_url?: string; error?: string };
-
+    let data;
     try {
-        data = JSON.parse(text);
+        data = await response.json();
     } catch {
         throw new Error(`Upload failed: unexpected response from server (HTTP ${response.status})`);
     }
 
-    if (data.error) {
-        throw new Error(`Upload failed: ${data.error}`);
+    if (!response.ok || !data.success) {
+        throw new Error(`Upload failed: ${data.message || 'Unknown error'}`);
     }
 
-    if (!data.image_url) {
+    if (!data.data || !data.data.url) {
         throw new Error('Upload failed: server did not return an image URL');
     }
 
-    // Return full URL; handle case where PHP already returns a full URL
-    if (data.image_url.startsWith('http')) {
-        return data.image_url;
-    }
-    return `${IMAGE_BASE_URL}${data.image_url}`;
+    return data.data.url;
 }
