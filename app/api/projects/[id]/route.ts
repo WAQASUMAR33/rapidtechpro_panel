@@ -96,7 +96,30 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json({ success: true, data: project });
+    if (Array.isArray(data.images)) {
+      await prisma.projectImage.deleteMany({
+        where: { projectId },
+      });
+      if (data.images.length > 0) {
+        await prisma.projectImage.createMany({
+          data: data.images.map((img: string | { imageUrl: string }) => ({
+            projectId,
+            imageUrl: typeof img === 'string' ? img : img.imageUrl,
+          })),
+        });
+      }
+    }
+
+    const updatedWithImages = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        categories: true,
+        technologies: true,
+        images: true,
+      },
+    });
+
+    return NextResponse.json({ success: true, data: updatedWithImages || project });
   } catch (error) {
     console.error('Error updating project:', error);
     return NextResponse.json(

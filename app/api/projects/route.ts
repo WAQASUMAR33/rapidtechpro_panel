@@ -101,6 +101,13 @@ export async function POST(request: NextRequest) {
             connect: data.technologyIds.map((id: number) => ({ id })),
           }
           : undefined,
+        images: Array.isArray(data.images) && data.images.length > 0
+          ? {
+            create: data.images.map((img: string | { imageUrl: string }) => ({
+              imageUrl: typeof img === 'string' ? img : img.imageUrl,
+            })),
+          }
+          : undefined,
       },
       include: {
         categories: true,
