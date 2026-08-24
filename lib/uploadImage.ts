@@ -31,8 +31,12 @@ export async function uploadImageDirect(file: File): Promise<string> {
     const formData = new FormData();
     formData.append('file', file);
 
+    const apiKey = process.env.NEXT_PUBLIC_RAPIDTECH_API_KEY || 'rapidtech_secret_key_2026';
     const response = await fetch('/api/upload', {
         method: 'POST',
+        headers: {
+            'x-api-key': apiKey,
+        },
         body: formData,
     });
 

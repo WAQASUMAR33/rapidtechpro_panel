@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ContentPage from './content';
 import CategoriesPage from './categories';
 import TechnologiesPage from './technologies';
@@ -37,12 +37,25 @@ type PageType = 'dashboard' | 'content' | 'categories' | 'technologies' | 'servi
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
+  
+  const initialTab = (searchParams.get('tab') as PageType) || 'dashboard';
+  const [currentPage, setCurrentPage] = useState<PageType>(initialTab);
   const [projects, setProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Sync tab with URL searchParams if browser back/forward or direct link accessed
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab') as PageType;
+    if (tabFromUrl && menuItems.some(m => m.id === tabFromUrl)) {
+      setCurrentPage(tabFromUrl);
+    } else if (!tabFromUrl) {
+      setCurrentPage('dashboard');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const pageLabel = menuItems.find(m => m.id === currentPage)?.label || 'Dashboard';
@@ -51,6 +64,15 @@ export default function AdminDashboard() {
     fetchCategories();
     fetchTechnologies();
   }, [currentPage]);
+
+  const handleTabChange = (pageId: PageType) => {
+    setCurrentPage(pageId);
+    if (pageId === 'dashboard') {
+      router.push('/admin');
+    } else {
+      router.push(`/admin?tab=${pageId}`);
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -136,7 +158,7 @@ export default function AdminDashboard() {
           {menuItems.map((item, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrentPage(item.id)}
+              onClick={() => handleTabChange(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${currentPage === item.id
                 ? 'bg-teal-600 font-semibold'
                 : 'hover:bg-teal-600 text-teal-100'

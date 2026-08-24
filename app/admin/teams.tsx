@@ -24,6 +24,17 @@ const COMMON_ROLES = [
     'Marketing & Growth'
 ];
 
+export const getTeamImageUrl = (image: string) => {
+    if (!image) return 'https://rapidtechpro.com/company/logo.png';
+    if (image.startsWith('http://') || image.startsWith('https://') || image.startsWith('blob:') || image.startsWith('data:')) {
+        return image;
+    }
+    if (image.startsWith('/')) {
+        return `https://rapidtechpro.com${image}`;
+    }
+    return `https://rapidtechpro.com/team/${image}`;
+};
+
 export default function TeamsPage() {
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(true);
@@ -106,7 +117,7 @@ export default function TeamsPage() {
 
         setLinkedinUrl(member.linkedinUrl || '');
         setPortfolioUrl(member.portfolioUrl || '');
-        setImagePreview(member.image);
+        setImagePreview(getTeamImageUrl(member.image));
         setImageFile(null);
         setShowAddForm(true);
         setStatusMessage(null);
@@ -685,12 +696,12 @@ export default function TeamsPage() {
                             {/* Card Image Header */}
                             <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
                                 <img
-                                    src={member.image}
+                                    src={getTeamImageUrl(member.image)}
                                     alt={member.name}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     onError={(e) => {
                                         // Fallback avatar if link broken
-                                        (e.target as HTMLElement).setAttribute('src', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80');
+                                        (e.target as HTMLElement).setAttribute('src', 'https://rapidtechpro.com/company/logo.png');
                                     }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-black/20 to-transparent" />

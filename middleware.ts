@@ -15,7 +15,7 @@ export default function middleware(request: NextRequest) {
         }
 
         const apiKey = request.headers.get('x-api-key');
-        const validApiKey = process.env.API_KEY || 'rapidtech_secret_key_2026';
+        const validApiKey = process.env.NEXT_PUBLIC_RAPIDTECH_API_KEY || process.env.API_KEY || 'rapidtech_secret_key_2026';
 
         // 1. Handle CORS Preflight (OPTIONS)
         if (request.method === 'OPTIONS') {
