@@ -1009,7 +1009,7 @@ export default function ContentPage() {
                     onChange={handleInputChange}
                     maxLength={2000}
                     className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-slate-900 text-sm placeholder-slate-400"
-                    placeholder="https://youtube.com/watch?v=... or Vimeo"
+                    placeholder="https://example.com/demo-video"
                   />
                 </div>
 
