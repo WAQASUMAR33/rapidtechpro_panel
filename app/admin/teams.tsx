@@ -29,6 +29,9 @@ export const getTeamImageUrl = (image: string) => {
     if (image.startsWith('http://') || image.startsWith('https://') || image.startsWith('blob:') || image.startsWith('data:')) {
         return image;
     }
+    if (image.startsWith('/uploads/')) {
+        return image;
+    }
     if (image.startsWith('/')) {
         return `https://rapidtechpro.com${image}`;
     }

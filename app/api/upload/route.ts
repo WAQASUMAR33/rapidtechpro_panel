@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const PHP_UPLOAD_URL =
-    process.env.NEXT_PUBLIC_IMAGE_UPLOAD_URL ||
-    'https://rapidtechpro.com/rapid_panel/uploadImage.php';
-
-const IMAGE_BASE_URL =
-    process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
-    'https://rapidtechpro.com/rapid_panel/uploads/';
+import path from 'path';
+import fs from 'fs/promises';
 
 export async function POST(request: NextRequest) {
     try {
@@ -28,60 +22,79 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const maxSize = 5 * 1024 * 1024;
+        const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
             return NextResponse.json(
-                { success: false, message: 'File size must be less than 5MB' },
+                { success: false, message: 'File size must be less than 10MB' },
                 { status: 400 }
             );
         }
 
-        // Convert to base64 Data URL for PHP
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        const base64 = buffer.toString('base64');
-        const dataUrl = `data:${file.type};base64,${base64}`;
 
-        // POST base64 as JSON to PHP script
-        const phpResponse = await fetch(PHP_UPLOAD_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: dataUrl }),
-        });
+        // 1. Try remote PHP upload script if reachable
+        const PHP_UPLOAD_URL = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_URL;
+        const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || 'https://rapidtechpro.com/rapid_panel/uploads/';
 
-        const phpResponseText = await phpResponse.text();
-        let phpData: { image_url?: string; error?: string };
+        if (PHP_UPLOAD_URL) {
+            try {
+                const base64 = buffer.toString('base64');
+                const dataUrl = `data:${file.type};base64,${base64}`;
 
-        try {
-            phpData = JSON.parse(phpResponseText);
-        } catch {
-            console.error('PHP Response:', phpResponseText.substring(0, 500));
-            return NextResponse.json(
-                { success: false, message: `Server error (${phpResponse.status}). Upload script returned invalid response.` },
-                { status: 500 }
-            );
+                const phpResponse = await fetch(PHP_UPLOAD_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: dataUrl }),
+                });
+
+                if (phpResponse.ok) {
+                    const phpText = await phpResponse.text();
+                    try {
+                        const phpData = JSON.parse(phpText);
+                        if (phpData && phpData.image_url && !phpData.error) {
+                            const url = phpData.image_url.startsWith('http')
+                                ? phpData.image_url
+                                : `${IMAGE_BASE_URL}${phpData.image_url}`;
+                            return NextResponse.json({
+                                success: true,
+                                message: 'Image uploaded successfully via remote storage',
+                                data: { filename: phpData.image_url, url }
+                            });
+                        }
+                    } catch {
+                        // Response was not JSON, fallback to local storage
+                    }
+                }
+            } catch (phpErr) {
+                console.warn('Remote upload endpoint unreachable, falling back to local server storage:', phpErr);
+            }
         }
 
-        if (phpData.error) {
-            return NextResponse.json({ success: false, message: phpData.error }, { status: 500 });
-        }
+        // 2. Reliable Local Storage in public/uploads
+        const extension = file.name.split('.').pop() || 'png';
+        const cleanExt = extension.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${cleanExt || 'png'}`;
 
-        if (!phpData.image_url) {
-            return NextResponse.json({ success: false, message: 'No image URL returned from server' }, { status: 500 });
-        }
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+        await fs.mkdir(uploadsDir, { recursive: true });
 
-        const url = phpData.image_url.startsWith('http')
-            ? phpData.image_url
-            : `${IMAGE_BASE_URL}${phpData.image_url}`;
+        const filePath = path.join(uploadsDir, filename);
+        await fs.writeFile(filePath, buffer);
+
+        const relativeUrl = `/uploads/${filename}`;
 
         return NextResponse.json({
             success: true,
             message: 'Image uploaded successfully',
-            data: { filename: phpData.image_url, url }
+            data: {
+                filename,
+                url: relativeUrl
+            }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Upload error:', error);
-        return NextResponse.json({ success: false, message: 'Failed to upload image' }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message || 'Failed to upload image' }, { status: 500 });
     }
 }
