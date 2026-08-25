@@ -1,12 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+const getBaseUrl = (request: NextRequest) => {
+    return process.env.NEXT_PUBLIC_RAPIDTECH_API_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+};
+
+const formatMemberImage = (member: any, baseUrl: string) => {
+    let img = member.image;
+    if (img && img.startsWith('/uploads/')) {
+        img = `${baseUrl}${img}`;
+    } else if (img && img.startsWith('/team/')) {
+        img = `https://rapidtechpro.com${img}`;
+    }
+    return {
+        ...member,
+        image: img,
+    };
+};
+
+export async function GET(request: NextRequest) {
     try {
+        const baseUrl = getBaseUrl(request);
         const teams = await prisma.teamMember.findMany({
             orderBy: { createdAt: 'desc' },
         });
-        return NextResponse.json({ success: true, data: teams });
+        const formattedTeams = teams.map(t => formatMemberImage(t, baseUrl));
+        return NextResponse.json({ success: true, data: formattedTeams });
     } catch (error: any) {
         console.error('Error fetching team members:', error);
         const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');

@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+const getBaseUrl = (request: NextRequest) => {
+    return process.env.NEXT_PUBLIC_RAPIDTECH_API_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+};
+
+const formatMemberImage = (member: any, baseUrl: string) => {
+    let img = member.image;
+    if (img && img.startsWith('/uploads/')) {
+        img = `${baseUrl}${img}`;
+    } else if (img && img.startsWith('/team/')) {
+        img = `https://rapidtechpro.com${img}`;
+    }
+    return {
+        ...member,
+        image: img,
+    };
+};
+
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -20,7 +37,8 @@ export async function GET(
             return NextResponse.json({ success: false, message: 'Team member not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, data: teamMember });
+        const baseUrl = getBaseUrl(request);
+        return NextResponse.json({ success: true, data: formatMemberImage(teamMember, baseUrl) });
     } catch (error) {
         console.error('Error fetching team member by ID:', error);
         return NextResponse.json(
