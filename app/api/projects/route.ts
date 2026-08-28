@@ -1,8 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+const getBaseUrl = (request: NextRequest) => {
+  return process.env.NEXT_PUBLIC_RAPIDTECH_API_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+};
+
+const formatProjectImages = (project: any, baseUrl: string) => {
+  if (!project) return project;
+
+  const resolveUrl = (url: string | null | undefined) => {
+    if (!url) return url;
+    if (url.startsWith('/uploads/')) {
+      return `${baseUrl}${url}`;
+    }
+    return url;
+  };
+
+  return {
+    ...project,
+    mainImage: resolveUrl(project.mainImage),
+    bannerImage: resolveUrl(project.bannerImage),
+    brandIcon: resolveUrl(project.brandIcon),
+    challengeImage1: resolveUrl(project.challengeImage1),
+    challengeImage2: resolveUrl(project.challengeImage2),
+    challengeImage3: resolveUrl(project.challengeImage3),
+    deviceMockupScreenshot1: resolveUrl(project.deviceMockupScreenshot1),
+    deviceMockupScreenshot2: resolveUrl(project.deviceMockupScreenshot2),
+    deviceMockupScreenshot3: resolveUrl(project.deviceMockupScreenshot3),
+    images: Array.isArray(project.images)
+      ? project.images.map((img: any) => ({
+          ...img,
+          url: resolveUrl(img.url),
+        }))
+      : project.images,
+  };
+};
+
 export async function GET(request: NextRequest) {
   try {
+    const baseUrl = getBaseUrl(request);
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get('slug');
 
@@ -24,7 +60,7 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      return NextResponse.json({ success: true, data: project });
+      return NextResponse.json({ success: true, data: formatProjectImages(project, baseUrl) });
     }
 
     // Otherwise return all projects
@@ -39,7 +75,8 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, data: projects });
+    const formattedProjects = projects.map((p) => formatProjectImages(p, baseUrl));
+    return NextResponse.json({ success: true, data: formattedProjects });
   } catch (error: any) {
     console.error('Error fetching projects:', error);
     const isDbError = error.code === 'P1001' || error.message?.includes('Can\'t reach database');
