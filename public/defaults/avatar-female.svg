@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Default female avatar">
+  <circle cx="100" cy="100" r="100" fill="#F7E9F1"/>
+  <path d="M56 96V72c0-27 20-46 44-46s44 19 44 46v24c0 22-6 38-14 46H70c-8-8-14-24-14-46z" fill="#3F2A47"/>
+  <circle cx="100" cy="82" r="31" fill="#B79FC4"/>
+  <path d="M66 70c4-16 18-26 34-26s30 10 34 26c-9-8-21-12-34-12s-25 4-34 12z" fill="#3F2A47"/>
+  <path d="M38 200c0-32 28-54 62-54s62 22 62 54H38z" fill="#8E6FA0"/>
+</svg>

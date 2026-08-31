@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { normalizeGender, resolveMemberImage } from '@/lib/teamImage';
 
 const getBaseUrl = (request: NextRequest) => {
     return process.env.NEXT_PUBLIC_RAPIDTECH_API_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 };
 
 const formatMemberImage = (member: any, baseUrl: string) => {
-    let img = member.image;
-    if (img && img.startsWith('/uploads/')) {
-        img = `${baseUrl}${img}`;
-    } else if (img && img.startsWith('/team/')) {
-        img = `https://rapidtechpro.com${img}`;
-    }
     return {
         ...member,
-        image: img,
+        gender: normalizeGender(member.gender),
+        image: resolveMemberImage(member.image, member.gender, baseUrl),
+        hasCustomImage: Boolean(member.image && member.image.trim()),
     };
 };
 
@@ -22,7 +19,7 @@ export async function GET(request: NextRequest) {
     try {
         const baseUrl = getBaseUrl(request);
         const teams = await prisma.teamMember.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: [{ isCeo: 'desc' }, { createdAt: 'desc' }],
         });
         const formattedTeams = teams.map(t => formatMemberImage(t, baseUrl));
         return NextResponse.json({ success: true, data: formattedTeams });
@@ -43,12 +40,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { name, designation, role, linkedinUrl, portfolioUrl, image } = body;
+        const { name, designation, role, gender, isCeo, linkedinUrl, portfolioUrl, image } = body;
 
-        // Basic validation
-        if (!name || !designation || !role || !image) {
+        // Basic validation - image is optional, a gender placeholder is used when missing
+        if (!name || !designation || !role) {
             return NextResponse.json(
-                { success: false, message: 'Name, designation, role, and image are required' },
+                { success: false, message: 'Name, designation, and role are required' },
                 { status: 400 }
             );
         }
@@ -58,14 +55,16 @@ export async function POST(request: NextRequest) {
                 name,
                 designation,
                 role,
+                gender: normalizeGender(gender),
+                isCeo: Boolean(isCeo),
                 linkedinUrl: linkedinUrl || null,
                 portfolioUrl: portfolioUrl || null,
-                image,
+                image: image || null,
             },
         });
 
         return NextResponse.json(
-            { success: true, message: 'Team member added successfully', data: teamMember },
+            { success: true, message: 'Team member added successfully', data: formatMemberImage(teamMember, getBaseUrl(request)) },
             { status: 201 }
         );
     } catch (error: any) {

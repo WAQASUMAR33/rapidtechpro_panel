@@ -159,9 +159,11 @@ model TeamMember {
   name         String
   designation  String
   role         String
+  gender       String   @default("male")
+  isCeo        Boolean  @default(false)
   linkedinUrl  String?
   portfolioUrl String?
-  image        String
+  image        String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

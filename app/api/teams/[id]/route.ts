@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { normalizeGender, resolveMemberImage } from '@/lib/teamImage';
 
 const getBaseUrl = (request: NextRequest) => {
     return process.env.NEXT_PUBLIC_RAPIDTECH_API_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 };
 
 const formatMemberImage = (member: any, baseUrl: string) => {
-    let img = member.image;
-    if (img && img.startsWith('/uploads/')) {
-        img = `${baseUrl}${img}`;
-    } else if (img && img.startsWith('/team/')) {
-        img = `https://rapidtechpro.com${img}`;
-    }
     return {
         ...member,
-        image: img,
+        gender: normalizeGender(member.gender),
+        image: resolveMemberImage(member.image, member.gender, baseUrl),
+        hasCustomImage: Boolean(member.image && member.image.trim()),
     };
 };
 
@@ -60,7 +57,7 @@ export async function PUT(
         }
 
         const body = await request.json();
-        const { name, designation, role, linkedinUrl, portfolioUrl, image } = body;
+        const { name, designation, role, gender, isCeo, linkedinUrl, portfolioUrl, image } = body;
 
         const updatedMember = await prisma.teamMember.update({
             where: { id: parseInt(id) },
@@ -68,16 +65,18 @@ export async function PUT(
                 name,
                 designation,
                 role,
+                gender: normalizeGender(gender),
+                isCeo: Boolean(isCeo),
                 linkedinUrl: linkedinUrl || null,
                 portfolioUrl: portfolioUrl || null,
-                image,
+                image: image || null,
             },
         });
 
         return NextResponse.json({
             success: true,
             message: 'Team member updated successfully',
-            data: updatedMember
+            data: formatMemberImage(updatedMember, getBaseUrl(request))
         });
     } catch (error) {
         console.error('Error updating team member:', error);
