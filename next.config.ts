@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'www.rapidtechpro.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'files.rapidtechpro.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'files.rapidtechpro.com',
       }
     ],
   },

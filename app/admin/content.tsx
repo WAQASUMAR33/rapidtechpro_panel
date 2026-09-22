@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { uploadImageDirect } from '@/lib/uploadImage';
+import { uploadImageDirect, getImageUrl } from '@/lib/uploadImage';
 
 interface Category {
   id: number;
@@ -95,7 +95,7 @@ function ImageUploadDropzone({
     }
   }, [selectedFile]);
 
-  const displayImage = localPreview || currentUrl;
+  const displayImage = localPreview || getImageUrl(currentUrl);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -1702,7 +1702,7 @@ export default function ContentPage() {
                       <div className="flex items-center gap-3.5">
                         <div className="w-14 h-11 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 relative shadow-xs">
                           <img
-                            src={project.mainImage}
+                            src={getImageUrl(project.mainImage)}
                             alt=""
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -1711,7 +1711,7 @@ export default function ContentPage() {
                           />
                           {project.projectIcon && (
                             <img
-                              src={project.projectIcon}
+                              src={getImageUrl(project.projectIcon)}
                               alt=""
                               className="absolute bottom-1 right-1 w-4 h-4 rounded-xs bg-white/90 p-0.5 object-contain shadow-xs"
                             />

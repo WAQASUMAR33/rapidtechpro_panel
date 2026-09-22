@@ -1,14 +1,19 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
 async function main() {
   try {
     console.log('Creating admin user...');
+
+    // Hash the password before storing
+    const hashedPassword = await bcrypt.hash('Admin@123', 10);
+
     const admin = await prisma.adminUser.create({
       data: {
         email: 'admin@company.com',
-        password: 'Admin@123',
+        password: hashedPassword,
       },
     }).catch(async (e) => {
       if (e.code === 'P2002') {

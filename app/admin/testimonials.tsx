@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { uploadImageDirect } from '@/lib/uploadImage';
+import { uploadImageDirect, getImageUrl } from '@/lib/uploadImage';
 
 interface Testimonial {
     id: number;
@@ -91,7 +91,7 @@ export default function TestimonialsPage() {
         setReview(item.review);
         setRatings(item.ratings);
         setExistingImage(item.image);
-        setImagePreview(item.image);
+        setImagePreview(getImageUrl(item.image));
         setImageFile(null);
         setShowAddForm(true);
     };
@@ -303,7 +303,7 @@ export default function TestimonialsPage() {
                             <div className="flex items-center gap-3 mt-2">
                                 {item.image ? (
                                     <img
-                                        src={item.image}
+                                        src={getImageUrl(item.image)}
                                         alt={item.name}
                                         className="w-12 h-12 rounded-full object-cover border-2 border-teal-500"
                                     />

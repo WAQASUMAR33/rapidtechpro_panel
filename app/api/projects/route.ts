@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getImageUrl } from '@/lib/uploadImage';
 
 const getBaseUrl = (request: NextRequest) => {
   return process.env.NEXT_PUBLIC_RAPIDTECH_API_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
@@ -11,10 +12,7 @@ const formatProjectImages = (project: any, baseUrl: string) => {
 
   const resolveUrl = (url: string | null | undefined) => {
     if (!url) return url;
-    if (url.startsWith('/uploads/')) {
-      return `${baseUrl}${url}`;
-    }
-    return url;
+    return getImageUrl(url);
   };
 
   return {

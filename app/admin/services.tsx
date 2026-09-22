@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { uploadImageDirect } from '@/lib/uploadImage';
+import { uploadImageDirect, getImageUrl } from '@/lib/uploadImage';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface ListItem { [key: string]: string }
@@ -321,7 +321,7 @@ export default function ServicesPage() {
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Service Icon</label>
                             <input type="file" accept="image/*" onChange={e => set('icon', e.target.files?.[0] || null)} className="input-base" />
-                            {formData.iconUrl && <img src={formData.iconUrl} alt="icon" className="mt-2 w-10 h-10 rounded object-cover" />}
+                            {formData.iconUrl && <img src={getImageUrl(formData.iconUrl)} alt="icon" className="mt-2 w-10 h-10 rounded object-cover" />}
                         </div>
                     </div>
 
@@ -334,7 +334,7 @@ export default function ServicesPage() {
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Hero Image</label>
                             <input type="file" accept="image/*" onChange={e => set('heroImage', e.target.files?.[0] || null)} className="input-base" />
-                            {formData.heroImageUrl && <img src={formData.heroImageUrl} alt="hero" className="mt-2 h-24 rounded object-cover" />}
+                            {formData.heroImageUrl && <img src={getImageUrl(formData.heroImageUrl)} alt="hero" className="mt-2 h-24 rounded object-cover" />}
                         </div>
                     </FormSection>
 
@@ -450,7 +450,7 @@ export default function ServicesPage() {
                             <div className="flex gap-4">
                                 {service.icon && (
                                     <div className="flex-shrink-0">
-                                        <img src={service.icon} alt={service.title} className="w-12 h-12 object-contain bg-gray-50 rounded" />
+                                        <img src={getImageUrl(service.icon)} alt={service.title} className="w-12 h-12 object-contain bg-gray-50 rounded" />
                                     </div>
                                 )}
                                 <div className="flex-1 min-w-0">

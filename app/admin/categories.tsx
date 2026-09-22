@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getImageUrl } from '@/lib/uploadImage';
 
 interface Category {
   id: number;
@@ -281,7 +282,7 @@ export default function CategoriesPage() {
                   >
                     {project.mainImage && (
                       <img
-                        src={project.mainImage}
+                        src={getImageUrl(project.mainImage)}
                         alt={project.title}
                         className="w-full h-40 object-cover rounded-lg mb-3"
                       />

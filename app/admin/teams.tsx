@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { uploadImageDirect } from '@/lib/uploadImage';
+import { uploadImageDirect, getImageUrl } from '@/lib/uploadImage';
 
 interface TeamMember {
     id: number;
@@ -36,16 +36,10 @@ const COMMON_ROLES = [
 
 export const getTeamImageUrl = (image?: string | null, gender?: string | null) => {
     if (!image) return DEFAULT_AVATARS[normalizeGender(gender)];
-    if (image.startsWith('http://') || image.startsWith('https://') || image.startsWith('blob:') || image.startsWith('data:')) {
-        return image;
-    }
-    if (image.startsWith('/uploads/')) {
-        return image;
-    }
-    if (image.startsWith('/')) {
+    if (image.startsWith('/team/')) {
         return `https://rapidtechpro.com${image}`;
     }
-    return `https://rapidtechpro.com/team/${image}`;
+    return getImageUrl(image);
 };
 
 export default function TeamsPage() {

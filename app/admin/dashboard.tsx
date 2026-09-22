@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getImageUrl } from '@/lib/uploadImage';
 import ContentPage from './content';
 import CategoriesPage from './categories';
 import TechnologiesPage from './technologies';
@@ -299,7 +300,7 @@ export default function AdminDashboard() {
                       <div key={project.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
                         {project.mainImage && (
                           <img
-                            src={project.mainImage}
+                            src={getImageUrl(project.mainImage)}
                             alt={project.title}
                             className="w-full h-40 object-cover"
                           />

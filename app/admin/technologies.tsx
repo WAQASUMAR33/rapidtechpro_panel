@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { uploadImageDirect } from '@/lib/uploadImage';
+import { uploadImageDirect, getImageUrl } from '@/lib/uploadImage';
 
 interface Category {
   id: number;
@@ -295,7 +295,7 @@ export default function TechnologiesPage() {
                   <div className="flex flex-col items-center text-center">
                     {technology.icon && (
                       <img
-                        src={technology.icon}
+                        src={getImageUrl(technology.icon)}
                         alt={technology.name}
                         className="w-12 h-12 object-contain mb-2"
                       />
@@ -334,7 +334,7 @@ export default function TechnologiesPage() {
                   >
                     {project.mainImage && (
                       <img
-                        src={project.mainImage}
+                        src={getImageUrl(project.mainImage)}
                         alt={project.title}
                         className="w-full h-40 object-cover rounded-lg mb-3"
                       />

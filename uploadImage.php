@@ -1,87 +1,91 @@
 <?php
-/**
- * RapidTechPro Image Upload Receiver for Hostinger / cPanel Server
- * Place this file inside: public_html/rapid_panel/uploadImage.php
- * Uploaded files will be stored in: public_html/rapid_panel/uploads/
- */
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, x-api-key');
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-$uploadDir = __DIR__ . '/uploads/';
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+$target_dir = "uploads/";
+
+if (!file_exists($target_dir)) {
+    mkdir($target_dir, 0777, true);
 }
 
-// 1. Check for Base64 JSON payload
-$input = json_decode(file_get_contents('php://input'), true);
+// 1. DIRECT RAW BINARY UPLOAD (Multipart form-data) - NO Base64 overhead!
+if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+    $tmp_name = $_FILES['file']['tmp_name'];
+    $original_name = $_FILES['file']['name'];
+    $extension = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
 
-if (isset($input['image'])) {
-    $data = $input['image'];
-    if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
-        $data = substr($data, strpos($data, ',') + 1);
-        $type = strtolower($type[1]);
-        if ($type === 'jpeg') $type = 'jpg';
+    if (empty($extension)) {
+        $extension = 'webp';
+    }
 
-        if (!in_array($type, ['jpg', 'png', 'gif', 'webp'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid image format. Allowed: JPG, PNG, GIF, WebP']);
-            exit();
-        }
-
-        $data = base64_decode($data);
-        if ($data === false) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Base64 decode failed']);
-            exit();
-        }
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid base64 data format']);
+    if (!in_array($extension, ['webp', 'jpg', 'jpeg', 'png', 'gif', 'ico', 'svg'])) {
+        echo json_encode(['error' => 'Invalid image format. Allowed: WEBP, JPG, PNG, GIF, ICO, SVG']);
         exit();
     }
 
-    $fileName = time() . '_' . uniqid() . '.' . $type;
-    $filePath = $uploadDir . $fileName;
+    $file_name = uniqid() . '.' . $extension;
+    $file_path = $target_dir . $file_name;
 
-    if (file_put_contents($filePath, $data)) {
+    if (move_uploaded_file($tmp_name, $file_path)) {
         echo json_encode([
             'success' => true,
-            'image_url' => $fileName
+            'image_url' => $file_name
         ]);
         exit();
     } else {
         http_response_code(500);
-        echo json_encode(['error' => 'Failed to write file to uploads directory']);
+        echo json_encode(['error' => 'Failed to save binary uploaded file.']);
         exit();
     }
 }
 
-// 2. Check for Multipart form-data
-if (isset($_FILES['file'])) {
-    $file = $_FILES['file'];
-    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $fileName = time() . '_' . uniqid() . '.' . $extension;
-    $filePath = $uploadDir . $fileName;
+// 2. Base64 fallback (for legacy compatibility)
+$data = json_decode(file_get_contents('php://input'), true);
 
-    if (move_uploaded_file($file['tmp_name'], $filePath)) {
+if (isset($data['image']) && !empty($data['image'])) {
+    $base64_image = $data['image'];
+    $type = isset($data['type']) ? strtolower($data['type']) : 'webp';
+
+    if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'ico', 'svg'])) {
+        echo json_encode(['error' => 'Invalid image type.']);
+        exit();
+    }
+
+    if (strpos($base64_image, 'base64,') !== false) {
+        $base64_image = substr($base64_image, strpos($base64_image, ',') + 1);
+    }
+
+    $image_data = base64_decode($base64_image);
+    if ($image_data === false) {
+        echo json_encode(['error' => 'Base64 decoding failed.']);
+        exit();
+    }
+
+    $file_name = uniqid() . '.' . $type;
+    $file_path = $target_dir . $file_name;
+
+    if (file_put_contents($file_path, $image_data)) {
         echo json_encode([
             'success' => true,
-            'image_url' => $fileName
+            'image_url' => $file_name
         ]);
         exit();
     } else {
         http_response_code(500);
-        echo json_encode(['error' => 'Failed to save uploaded file']);
+        echo json_encode(['error' => 'Failed to save the image.']);
         exit();
     }
 }
 
 http_response_code(400);
-echo json_encode(['error' => 'No image file or data provided']);
+echo json_encode(['error' => 'No image file or data provided.']);
+?>

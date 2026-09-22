@@ -1,3 +1,5 @@
+import { getImageUrl } from './uploadImage';
+
 export const DEFAULT_AVATARS = {
     male: '/defaults/avatar-male.svg',
     female: '/defaults/avatar-female.svg',
@@ -21,11 +23,9 @@ export const resolveMemberImage = (image: string | null | undefined, gender: str
     if (!img) {
         return `${baseUrl}${DEFAULT_AVATARS[normalizeGender(gender)]}`;
     }
-    if (img.startsWith('/uploads/')) {
-        return `${baseUrl}${img}`;
-    }
     if (img.startsWith('/team/')) {
         return `https://rapidtechpro.com${img}`;
     }
-    return img;
+    return getImageUrl(img);
 };
+

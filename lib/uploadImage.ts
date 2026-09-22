@@ -9,11 +9,11 @@
 
 const PHP_UPLOAD_URL =
     process.env.NEXT_PUBLIC_IMAGE_UPLOAD_URL ||
-    'https://rapidtechpro.com/rapid_panel/uploadImage.php';
+    'https://files.rapidtechpro.com/upload_Image.php';
 
 const IMAGE_BASE_URL =
     process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
-    'https://rapidtechpro.com/rapid_panel/uploads/';
+    'https://files.rapidtechpro.com/uploads/';
 
 /**
  * Convert a File to a base64 Data URL string.
@@ -57,3 +57,42 @@ export async function uploadImageDirect(file: File): Promise<string> {
 
     return data.data.url;
 }
+
+/**
+ * Resolves an image path, relative URL, or full URL to a valid loadable URL.
+ * Handles:
+ *  - Full URLs: https://files.rapidtechpro.com/uploads/... -> unchanged
+ *  - Relative local paths: /uploads/... -> https://files.rapidtechpro.com/uploads/...
+ *  - Base filenames: 6ab25004af1ce.webp -> https://files.rapidtechpro.com/uploads/6ab25004af1ce.webp
+ *  - Blob/Data URLs: blob:... / data:... -> unchanged (for instant browser previews)
+ */
+export function getImageUrl(imagePath?: string | null): string {
+    if (!imagePath) return '';
+    const trimmed = imagePath.trim();
+    if (!trimmed) return '';
+
+    if (
+        trimmed.startsWith('http://') ||
+        trimmed.startsWith('https://') ||
+        trimmed.startsWith('data:') ||
+        trimmed.startsWith('blob:')
+    ) {
+        return trimmed;
+    }
+
+    const rawBaseUrl =
+        process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
+        'https://files.rapidtechpro.com/uploads/';
+    const baseUploadsUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl : `${rawBaseUrl}/`;
+
+    if (trimmed.startsWith('/uploads/')) {
+        return `${baseUploadsUrl}${trimmed.replace(/^\/uploads\//, '')}`;
+    }
+
+    if (trimmed.startsWith('/')) {
+        return trimmed;
+    }
+
+    return `${baseUploadsUrl}${trimmed}`;
+}
+
