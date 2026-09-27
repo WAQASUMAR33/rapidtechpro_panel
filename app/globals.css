@@ -188,3 +188,50 @@ body {
 .animate-stagger > *:nth-child(5) { animation-delay: 0.5s; }
 .animate-stagger > *:nth-child(6) { animation-delay: 0.6s; }
 
+/* Modern High-Performance Progress Bar Animations */
+@keyframes progressIndeterminate {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+
+@keyframes progressShort {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}
+
+.animate-progress-primary {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  will-change: left, right;
+  animation: progressIndeterminate 1.8s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+.animate-progress-secondary {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  will-change: left, right;
+  animation: progressShort 1.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.95s infinite;
+}
+

@@ -13,36 +13,63 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const admin = await prisma.adminUser.findUnique({
-            where: { email },
-        });
+        // 1. Check against environment variables if configured
+        const envEmail = process.env.ADMIN_EMAIL;
+        const envPassword = process.env.ADMIN_PASSWORD;
 
-        if (!admin) {
+        let isAuthenticated = false;
+        let adminUser: { id: number; email: string } | null = null;
+
+        if (
+            envEmail &&
+            envPassword &&
+            email.trim().toLowerCase() === envEmail.trim().toLowerCase() &&
+            password === envPassword
+        ) {
+            isAuthenticated = true;
+            adminUser = { id: 1, email: envEmail };
+        }
+
+        // 2. If not matched with env, verify against database
+        if (!isAuthenticated) {
+            try {
+                const dbAdmin = await prisma.adminUser.findUnique({
+                    where: { email: email.trim() },
+                });
+
+                if (dbAdmin) {
+                    let isPasswordValid = false;
+                    if (dbAdmin.password.startsWith('$2a$') || dbAdmin.password.startsWith('$2b$')) {
+                        isPasswordValid = await bcrypt.compare(password, dbAdmin.password);
+                    } else {
+                        // Plain text fallback if previously saved unhashed
+                        isPasswordValid = password === dbAdmin.password;
+                    }
+
+                    if (isPasswordValid) {
+                        isAuthenticated = true;
+                        adminUser = { id: dbAdmin.id, email: dbAdmin.email };
+                    }
+                }
+            } catch (dbErr) {
+                console.error('Database query error during login:', dbErr);
+            }
+        }
+
+        if (!isAuthenticated || !adminUser) {
             return NextResponse.json(
                 { success: false, message: 'Invalid credentials' },
                 { status: 401 }
             );
         }
 
-        const isPasswordValid = await bcrypt.compare(password, admin.password);
-
-        if (!isPasswordValid) {
-            return NextResponse.json(
-                { success: false, message: 'Invalid credentials' },
-                { status: 401 }
-            );
-        }
-
-        // In a real production app, we would use a library like `jose` or `jsonwebtoken` 
-        // to create a signed JWT and set it in a secure, httpOnly cookie.
-        // For this implementation, we'll set a simple session cookie as requested.
-
+        // Session response
         const response = NextResponse.json({
             success: true,
             message: 'Login successful',
             data: {
-                id: admin.id,
-                email: admin.email
+                id: adminUser.id,
+                email: adminUser.email
             }
         });
 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import SectionLoadingBar from '@/components/SectionLoadingBar';
 import { getImageUrl } from '@/lib/uploadImage';
 
 interface Category {
@@ -119,11 +120,7 @@ export default function CategoriesPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
+    return <SectionLoadingBar title="Loading categories..." subtitle="Fetching taxonomy and project associations" />;
   }
 
   return (

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import SectionLoadingBar from '@/components/SectionLoadingBar';
 import { uploadImageDirect, getImageUrl } from '@/lib/uploadImage';
 
 interface Category {
@@ -133,11 +134,7 @@ export default function TechnologiesPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
+    return <SectionLoadingBar title="Loading technologies..." subtitle="Fetching technical stack and icon directory" />;
   }
 
   return (

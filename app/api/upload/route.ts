@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // 2. Reliable Local Storage in public/uploads
+        // 2. Reliable Local Storage in public/uploads (fallback when remote PHP is unreachable)
         const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${finalExt}`;
 
         const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
@@ -129,14 +129,16 @@ export async function POST(request: NextRequest) {
         const filePath = path.join(uploadsDir, filename);
         await fs.writeFile(filePath, processedBuffer);
 
-        const relativeUrl = `/uploads/${filename}`;
+        // Always return the canonical remote URL (https://files.rapidtechpro.com)
+        const fullUrl = IMAGE_BASE_URL + filename;
 
+        
         return NextResponse.json({
             success: true,
             message: 'Image uploaded successfully',
             data: {
                 filename,
-                url: relativeUrl
+                url: fullUrl
             }
         });
 
